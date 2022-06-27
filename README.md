@@ -24,3 +24,4 @@ par(mfrow=c(1,2))
 plot(kk$scores,pch=21,bg=rainbow(22)[class], main="KODAMA-tSNE")
 plot(tt$Y,pch=21,bg=rainbow(22)[class], main="tSNE, xlab="First Component", ylab="Second Component")
 ```
+![This is an image](https://github.com/tkcaccia/Documents/blob/main/Figures/MetRef.png)
