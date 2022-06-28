@@ -31,8 +31,8 @@ plot(tt$Y,pch=21,bg=rainbow(22)[class], main="tSNE, xlab="First Component", ylab
 
 The data set from Tasic et al. encompasses 23,822 cells from adult mouse cortex, split by the authors into 133 clusters with strong hierarchical organisation. A standard preprocessing pipeline consisting of sequencing depth normalisation, feature selection, log-transformation, and reducing the dimensionality to 50 PCs was applied as described by Kobak & Berens in (The art of using t-SNE for single-cell transcriptomics)[https://www.nature.com/articles/s41467-019-13056-x].
 
-Download the data from here: http://celltypes.brain-map.org/rnaseq and unpack. Direct links: (VISp)[http://celltypes.brain-map.org/api/v2/well_known_file_download/694413985], (ALM)[http://celltypes.brain-map.org/api/v2/well_known_file_download/694413179].
-To get the information about cluster colors and labels (sample_heatmap_plot_data.csv), open the interactive data browser http://celltypes.brain-map.org/rnaseq/mouse/v1-alm, go to "Sample Heatmaps", click "Build Plot!" and then "Download data as CSV". For later reproducibility, this file is also provided in this github repository (data folder).
+Download the data from (here)[http://celltypes.brain-map.org/rnaseq] and unpack. Direct links: (VISp)[http://celltypes.brain-map.org/api/v2/well_known_file_download/694413985], (ALM)[http://celltypes.brain-map.org/api/v2/well_known_file_download/694413179].
+To get the information about cluster colors and labels (sample_heatmap_plot_data.csv), open the interactive (data browser)[http://celltypes.brain-map.org/rnaseq/mouse/v1-alm], go to "Sample Heatmaps", click "Build Plot!" and then "Download data as CSV". For later reproducibility, this file is also provided in this github repository (data folder).
 
 ```
 ta=read.csv("tasic-sample_heatmap_plot_data.txt")
