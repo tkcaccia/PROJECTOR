@@ -123,7 +123,23 @@ require("gridExtra")
 grid.arrange(plot1, plot2, plot3, ncol=3)
 ```
 
+![This is an image](https://github.com/tkcaccia/Documents/blob/main/GeoMX.png)
 
+To reduce the computational time, the first 50 principal components can be used as input of KODAMA
+
+```
+
+
+data.pca=prcomp(data)$x[,1:50]
+
+kkpca=KODAMA(data.pca)
+pData(target_demoData)[, c("KODAMA1", "KODAMA2")] <- kkpca$scores
+ggplot(pData(target_demoData),
+             aes(x = KODAMA1, y = KODAMA2, color = segment, shape = class)) +
+  geom_point(size = 3) +
+  theme_bw()
+```
+![This is an image](https://github.com/tkcaccia/Documents/blob/main/GeoMX2.png)
 
 
 
