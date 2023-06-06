@@ -62,7 +62,7 @@ plot(res_KODAMA_tSNE,pch=21,bg=ta[,"cluster_color"],main="KODAMA", xlab= "Fisrt 
 
 <p>
   <p align="center">
-    <img src="https://github.com/ebtesam-rashid/KODAMA.Caccio/blob/main/Figures/final%20single%20cell%20kodama.png" alt="hello-light" height="500" width="500" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/final%20single%20cell%20kodama.png" alt="hello-light" height="500" width="500" />
   </p>
 </p>
 
