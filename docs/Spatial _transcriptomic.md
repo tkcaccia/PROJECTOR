@@ -137,7 +137,7 @@ grid.arrange(plot1, plot2, ncol=2)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/MDS%20geomx.png" alt="hello-light" height="300" width="600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/MDS%20geomx.png" alt="hello-light" height="500" width="700" />
   </p>
 </p>
 
@@ -149,7 +149,7 @@ grid.arrange(plot3, plot4, ncol=2)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/tsne%20geomx.png" alt="hello-light" height="300" width="600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/tsne%20geomx.png" alt="hello-light" height="500" width="700" />
   </p>
 </p>
 
@@ -161,7 +161,7 @@ grid.arrange(plot5, plot6, ncol=2)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/umap%20geomx.png" alt="hello-light" height="300" width=600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/umap%20geomx.png" alt="hello-light" height="500" width=700" />
   </p>
 </p>
 
@@ -306,6 +306,6 @@ grid.arrange(plot7, ncol=1)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CD68.png" alt="hello-light" height="300" width=600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CD68.png" alt="hello-light" height="500" width=700" />
   </p>
 </p>                                                                                                                                 
