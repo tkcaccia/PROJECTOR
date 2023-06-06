@@ -76,7 +76,7 @@ ggplot(sum, aes(x = noisy, y = COEF_EST, ymin = COEF_LOWER, ymax = COEF_UPPER)) 
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CI.png" alt="hello-light" height="300" width="600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CI.png" alt="hello-light" height="500" width="700" />
   </p>
 </p>
 
