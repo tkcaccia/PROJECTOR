@@ -24,7 +24,7 @@ The KODAMA is avialable on https://CRAN.R-project.org/package=KODAMA.
 
 ```
 library(devtools)
-install_github("tkcaccia/KODAMA", build_vignettes = TRUE)
+install_github("tkcaccia/KODAMA")
 
 ```
 
