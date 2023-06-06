@@ -48,7 +48,7 @@ plot(res_KODAMA_UMAP,pch=21,bg=labels,main="KODAMA_UMAP")
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/ebtesam-rashid/KODAMA.Caccio/blob/main/Figures/final%20one%20simulated.png" alt="hello-light" height="500" width="700" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/final%20one%20simulated.png" alt="hello-light" height="500" width="700" />
   </p>
 </p>
 
@@ -76,7 +76,7 @@ ggplot(sum, aes(x = noisy, y = COEF_EST, ymin = COEF_LOWER, ymax = COEF_UPPER)) 
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/ebtesam-rashid/KODAMA.Caccio/blob/main/Figures/CI.png" alt="hello-light" height="300" width="600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CI.png" alt="hello-light" height="300" width="600" />
   </p>
 </p>
 
@@ -137,7 +137,7 @@ grid.arrange(plot1, plot2, ncol=2)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/ebtesam-rashid/KODAMA.Caccio/blob/main/Figures/MDS%20geomx.png" alt="hello-light" height="300" width="600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/MDS%20geomx.png" alt="hello-light" height="300" width="600" />
   </p>
 </p>
 
@@ -149,7 +149,7 @@ grid.arrange(plot3, plot4, ncol=2)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/ebtesam-rashid/KODAMA.Caccio/blob/main/Figures/tsne%20geomx.png" alt="hello-light" height="300" width="600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/tsne%20geomx.png" alt="hello-light" height="300" width="600" />
   </p>
 </p>
 
@@ -161,7 +161,7 @@ grid.arrange(plot5, plot6, ncol=2)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/ebtesam-rashid/KODAMA.Caccio/blob/main/Figures/umap%20geomx.png" alt="hello-light" height="300" width=600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/umap%20geomx.png" alt="hello-light" height="300" width=600" />
   </p>
 </p>
 
@@ -246,7 +246,7 @@ grid.arrange(plot1, plot2, ncol=2)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/ebtesam-rashid/KODAMA.Caccio/blob/main/Figures/MDS%20dat2.png" alt="hello-light" height="300" width="600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/MDS%20dat2.png" alt="hello-light" height="300" width="600" />
   </p>
 </p>
 
@@ -258,7 +258,7 @@ grid.arrange(plot2, plot5, ncol=2)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/ebtesam-rashid/KODAMA.Caccio/blob/main/Figures/TSNE%20dat2.png" alt="hello-light" height="300" width="600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/TSNE%20dat2.png" alt="hello-light" height="300" width="600" />
   </p>
 </p>
 
@@ -270,23 +270,11 @@ grid.arrange(plot3, plot6, ncol=2)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/ebtesam-rashid/KODAMA.Caccio/blob/main/Figures/UMAP%20dat2.png" alt="hello-light" height="300" width=600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/UMAP%20dat2.png" alt="hello-light" height="300" width=600" />
   </p>
 </p>                  
 
 #### KODAMA.umap clustering according to 
-#### AR gene expression
-```
-values=as.numeric(metadata$`H-score AR (IHC)`)
-v=quantile(values,probs=c(0.2,0.4,0.6,0.8),na.rm = TRUE)
-AR.gene=findInterval(values, v)
-plot6=ggplot(metadata,
-             aes(x = KODAMA1umap, y = KODAMA2umap)) +
-  geom_point(aes(fill=AR.gene), 
-             colour="black",pch=21, size=4) +
-  theme_bw()
-grid.arrange(plot6, ncol=1)
-```
 #### AR protein
 ```
 values=as.numeric(p3$AR)
@@ -301,7 +289,7 @@ grid.arrange(plot7, ncol=1)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/ebtesam-rashid/KODAMA.Caccio/blob/main/Figures/AR.png" alt="hello-light" height="300" width=600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/AR.png" alt="hello-light" height="500" width=700" />
   </p>
 </p>                  
 #### CD68
@@ -318,6 +306,6 @@ grid.arrange(plot7, ncol=1)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/ebtesam-rashid/KODAMA.Caccio/blob/main/Figures/CD68.png" alt="hello-light" height="300" width=600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CD68.png" alt="hello-light" height="300" width=600" />
   </p>
 </p>                                                                                                                                 
