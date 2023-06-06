@@ -23,9 +23,8 @@ KODAMA was built on accuracy maximization algorithms described in detail in the 
 The KODAMA is avialable on https://CRAN.R-project.org/package=KODAMA.
 
 ```
-install.packages("KODAMA_2.9.tar.gz", repos=NULL, type="source")
-
-library("KODAMA")
+library(devtools)
+install_github("tkcaccia/KODAMA", build_vignettes = TRUE)
 
 ```
 
