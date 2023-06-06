@@ -246,7 +246,7 @@ grid.arrange(plot1, plot2, ncol=2)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/MDS%20dat2.png" alt="hello-light" height="300" width="600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/MDS%20dat2.png" alt="hello-light" height="500" width="700" />
   </p>
 </p>
 
@@ -258,7 +258,7 @@ grid.arrange(plot2, plot5, ncol=2)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/TSNE%20dat2.png" alt="hello-light" height="300" width="600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/TSNE%20dat2.png" alt="hello-light" height="500" width="700" />
   </p>
 </p>
 
@@ -270,7 +270,7 @@ grid.arrange(plot3, plot6, ncol=2)
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/UMAP%20dat2.png" alt="hello-light" height="300" width=600" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/UMAP%20dat2.png" alt="hello-light" height="500" width=700" />
   </p>
 </p>                  
 
