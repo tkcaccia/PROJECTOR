@@ -30,8 +30,8 @@ install_github("tkcaccia/KODAMA", build_vignettes = TRUE)
 
 
 ## Applications 
-1.  [Metabolomic data](https://github.com/ebtesam-rashid/KODAMA.Caccio/blob/main/docs/Metabolomics_data.md).
+1.  [Metabolomic data](https://https://github.com/tkcaccia/KODAMA/blob/main/docs/Metabolomics_data.md).
 
-2.  [Single cell RNA seq data](https://github.com/ebtesam-rashid/KODAMA.Caccio/blob/main/docs/Single_cell_RNA_seq.md).
+2.  [Single cell RNA seq data](https://https://github.com/tkcaccia/KODAMA/blob/main/docs/Single_cell_RNA_seq.md).
 
-3.  [Spatial Transcriptomic data](https://github.com/ebtesam-rashid/KODAMA.Caccio/blob/main/docs/Spatial%20_transcriptomic.md).
+3.  [Spatial Transcriptomic data](https://https://github.com/tkcaccia/KODAMA/blob/main/docs/Spatial%20_transcriptomic.md).
