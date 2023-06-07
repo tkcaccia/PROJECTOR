@@ -15,8 +15,7 @@ library(Rmisc)
 library(gmodels)
 ```
 
-1. The data is simulated with vertix function from KODAMA package with 2 dimensions and 8 noisy dimensions.
-2. The generated data is scaled
+The data is simulated with vertix function from KODAMA package with 2 dimensions and 8 noisy dimensions and then scaled
 
 ```
 ma=scale(ma)
