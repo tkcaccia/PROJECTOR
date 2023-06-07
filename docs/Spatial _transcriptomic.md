@@ -276,6 +276,7 @@ grid.arrange(plot3, plot6, ncol=2)
 
 #### KODAMA.umap clustering according to 
 #### Androgen receptor(AR)
+
 ```
 values=as.numeric(p3$AR)
 v=quantile(values,probs=c(0.2,0.4,0.6,0.8),na.rm = TRUE)
@@ -287,13 +288,16 @@ plot7=ggplot(metadata,
   theme_bw()
 grid.arrange(plot7, ncol=1)
 ```
+
 <p>
   <p align="center">
     <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/AR.png" alt="hello-light" height="500" width=700" />
   </p>
-</p>                  
+</p> 
+                                                                                                                    
 #### CD68
-```                                                                                                                    
+
+```                                                                                                                                                                                 
 values=as.numeric(p3$CD68)
 v=quantile(values,probs=c(0.2,0.4,0.6,0.8),na.rm = TRUE)
 CD68=findInterval(values, v)
@@ -304,6 +308,7 @@ plot7=ggplot(metadata,
   theme_bw()
 grid.arrange(plot7, ncol=1)
 ```
+                           
 <p>
   <p align="center">
     <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CD68.png" alt="hello-light" height="500" width=700" />
