@@ -274,8 +274,7 @@ grid.arrange(plot3, plot6, ncol=2)
   </p>
 </p>                  
 
-#### KODAMA.umap clustering according to 
-#### Androgen receptor(AR)
+#### KODAMA.umap clustering according to Androgen receptor(AR)
 
 ```
 values=as.numeric(p3$AR)
@@ -295,7 +294,7 @@ grid.arrange(plot7, ncol=1)
   </p>
 </p> 
                                                                                                                     
-#### CD68
+#### KODAMA.umap clustering according to CD68
 
 ```                                                                                                                                                                                 
 values=as.numeric(p3$CD68)
