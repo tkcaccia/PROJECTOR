@@ -8,10 +8,12 @@ KODAMA, tSNE, UMAP are applied to simulated data set of two dimention with diffe
 
 ### Tutorial
 #### Required libraries
+```
 library(ggplot)
 library(gridExtra)
 library(Rmisc)
 library(gmodels)
+```
 
 1. The data is simulated with vertix function from KODAMA package with 2 dimensions and 8 noisy dimensions.
 2. The generated data is scaled
