@@ -311,6 +311,6 @@ grid.arrange(plot7, ncol=1)
                            
 <p>
   <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CD68.png" alt="hello-light" height="500" width=700" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CD68.png" alt="hello-light" height="300" width=700" />
   </p>
 </p>                                                                                                                                 
