@@ -275,7 +275,7 @@ grid.arrange(plot3, plot6, ncol=2)
 </p>                  
 
 #### KODAMA.umap clustering according to 
-#### AR protein
+#### Androgen receptor(AR)
 ```
 values=as.numeric(p3$AR)
 v=quantile(values,probs=c(0.2,0.4,0.6,0.8),na.rm = TRUE)
