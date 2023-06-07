@@ -7,7 +7,7 @@ To show the how KODAMA could deal with noisy datasets compared to other dimensio
 KODAMA, tSNE, UMAP are applied to simulated data set of two dimention with different degrees of noisy (from 0 to 20). The following script to compare the effect of different dimentionallity reduction algorithms on a simulated data set of 8 noisy dimensions.
 
 ### Tutorial
-### Required libraries
+#### Required libraries
 library(ggplot)
 library(gridExtra)
 library(Rmisc)
