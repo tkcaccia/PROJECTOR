@@ -293,7 +293,7 @@ grid.arrange(plot7, ncol=1)
   </p>
 </p>                  
 #### CD68
-```                                                                                                                                 
+```                                                                                                                    
 values=as.numeric(p3$CD68)
 v=quantile(values,probs=c(0.2,0.4,0.6,0.8),na.rm = TRUE)
 CD68=findInterval(values, v)
