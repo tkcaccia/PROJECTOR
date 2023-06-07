@@ -69,7 +69,7 @@ sum <- sum[,-1]
 sum <- melt(setDT(sum), measure.vars = patterns("^mean", "^lower", "^upper"),
              value.name = c("COEF_EST", "COEF_LOWER", "COEF_UPPER"))
 noisy= rep(c(1:20),6)
-sum<- cbind(noisy, sum)
+sum <- cbind(noisy, sum)
 colnames(sum)[colnames(sum)=="variable"] <- "test"
 ggplot(sum, aes(x = noisy, y = COEF_EST, ymin = COEF_LOWER, ymax = COEF_UPPER)) +
   geom_ribbon(aes(fill = test), alpha = 0.3) +
