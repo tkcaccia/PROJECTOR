@@ -22,7 +22,7 @@ importFrom("umap", "umap.knn", "umap","umap.defaults")
 
 S3method(print,Rtsne.config)
 
-exportPattern(floyd,another,
+exportPattern(floyd,another,vertex,
               KODAMA,k.test,loads,
               mcplot,core_cpp,floyd,
               pls.double.cv,knn.double.cv,knn.kodama,
