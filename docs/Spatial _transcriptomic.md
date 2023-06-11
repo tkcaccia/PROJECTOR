@@ -9,7 +9,7 @@ KODAMA, tSNE, UMAP are applied to simulated data set of two dimention with diffe
 ### Tutorial
 #### Required libraries
 ```
-library(ggplot)
+library(ggplot2)
 library(gridExtra)
 library(Rmisc)
 library(gmodels)
