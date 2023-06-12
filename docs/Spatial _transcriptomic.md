@@ -263,7 +263,7 @@ grid.arrange(plot1, plot2, ncol=2)
 ```
 plot3=ggplot(metadata, aes(x = tSNE1, y = tSNE2, color = class)) + geom_point(aes(fill=Histology), colour="black",pch=21, size=4) + theme_bw()
 plot4=ggplot(metadata, aes(x = KODAMA1.tSNE, color = class)) + geom_point(aes(fill=Histology), colour="black",pch=21, size=4) + theme_bw()
-grid.arrange(plot2, plot5, ncol=2)
+grid.arrange(plot3, plot4, ncol=2)
 ```
 <p>
   <p align="center">
@@ -275,7 +275,7 @@ grid.arrange(plot2, plot5, ncol=2)
 ```
 plot5=ggplot(metadata, aes(x = UMAP1, y = UMAP2, color = class)) + geom_point(aes(fill=Histology), colour="black",pch=21, size=4) + theme_bw()
 plot6=ggplot(metadata, aes(x = KODAMA1.UMAP, color = class)) + geom_point(aes(fill=Histology), colour="black",pch=21, size=4) + theme_bw()
-grid.arrange(plot3, plot6, ncol=2)
+grid.arrange(plot5, plot6, ncol=2)
 ```
 <p>
   <p align="center">
