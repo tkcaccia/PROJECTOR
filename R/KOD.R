@@ -334,7 +334,7 @@ function (data, M = 100, Tcycle = 20, FUN_VAR = function(x) {
 }, FUN_SAM = function(x) {
   ceiling(nrow(x) * 0.75)
 }, bagging = FALSE, FUN = c("PLS-DA", "KNN"), f.par = 5, W = NULL, 
-constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 1000, 
+constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000, 
 neighbors = min(c(landmarks, nrow(data)/3)) + 1, spatial = "profile", 
 spatial.knn = 10) 
 {
