@@ -522,13 +522,14 @@ spatial.knn = 10)
                                  spatial.knn)$nn_index
       
     }
+    options(warn=-1)
     yatta=0
     attr(yatta,"class")="try-error"
     while(!is.null(attr(yatta,"class"))){
     yatta = try(core_cpp(x, xTdata, clbest, Tcycle, FUN, f.par, 
                      Xconstrain_ssa, Xfix_ssa, shake, xNeighbors))
     }
-
+    options(warn=0)
     if (is.list(yatta)) {
       clbest = as.vector(yatta$clbest)
       accu = yatta$accbest
