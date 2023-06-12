@@ -13,30 +13,6 @@ Rtsne.defaults <- list(
 )
 class(Rtsne.defaults) <- "Rtsne.config"
 
-print.Rtsne.config <- function(x, ...) {
-  
-  # produce a string of form "  z:  " of total length width
-  padspaces <- function(z, width=24) {
-    padleft <- max(0, width-nchar(z)-2)
-    paste(c(rep(" ", padleft), z, ": "), collapse="")
-  }
-  
-  message("Rtsne configuration parameters")
-  primitives <- c("numeric", "integer", "character", "logical")
-  vapply(names(x), function(z) {
-    zval <- x[[z]]
-    if (sum(class(zval) %in% primitives)) {
-      message(padspaces(z), paste(zval, collapse=" "))
-    } else {
-      message(padspaces(z), "[", paste(class(zval), collapse=","), "]")
-    }
-    z
-  }, character(1))
-  
-  invisible(x)
-}
-
-
 kabsch <- function(pm, qm) {
   pm_dims <- dim(pm)
   if (!all(dim(qm) == pm_dims)) {
