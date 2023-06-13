@@ -4,14 +4,23 @@ The data belong to a cohort of 22 healthy donors (11 male and 11 female) where e
 
 ### Tutorial
 
-1. Data upload and processing 
+Here, we load the MetRef dataset. Columns with only zero values are removed. 
 
 ```
 data(MetRef)
 u=MetRef$data
 u=u[,-which(colSums(u)==0)]
+```
+We apply the Probabilistic Quotient Normalization
+```
 u=normalization(u)$newXtrain
+```
+We mean-center and univariate scaling the data set.
+```
 u=scaling(u)$newXtrain
+```
+Two classification vectors are created
+```
 class=as.numeric(as.factor(MetRef$gender))
 class2=as.numeric(as.factor(MetRef$donor))
 ```
