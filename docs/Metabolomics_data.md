@@ -1,8 +1,8 @@
-## Metabolomic data
+# Metabolomic data
 
 The data belong to a cohort of 22 healthy donors (11 male and 11 female) where each provided about 40 urine samples over the time course of approximately 2 months, for a total of 873 samples. Each sample was analysed by Nuclear Magnetic Resonance Spectroscopy. Each spectrum was divided in 450 spectral bins.
 
-### Tutorial
+## Tutorial
 
 Here, we load the MetRef dataset. Columns with only zero values are removed. 
 
@@ -24,15 +24,15 @@ Two classification vectors are created
 class=as.numeric(as.factor(MetRef$gender))
 class2=as.numeric(as.factor(MetRef$donor))
 ```
-
-2. Apply MDS, tSNE and UMAP
+# MDS, tSNE and UMAP
+Different algorithms for dimensionality reduction are applied
 ```
 res_MDS=cmdscale(dist(u))
 res_tSNE=Rtsne(u)$Y
 res_UMAP = umap(u)$layout
 ```
-
-3. Apply KODAMA (The f. par has been adjusted to 50 which means 50 princible components for the Partial Least Square "PLS" classifier)
+# KODAMA
+We apply KODAMA with Partial Least Square Discriminant Analysis (PLS-DA) as classifier with 50 components to drive the accuracy maximixation. The KODAMA dissimilarity matrix's is converted in a low dimensionality space using three different methods (i.e., MDS, t-SNE, and UMAP).
 
 ```
 kk=KODAMA.matrix(u,f.par = 50)
@@ -41,7 +41,7 @@ res_KODAMA_tSNE=KODAMA.visualization(kk,method = "t-SNE")
 res_KODAMA_UMAP=KODAMA.visualization(kk,method = "UMAP")
 ```
 
-4. Visualize the different clustering algorithmss:
+# Visualize the different clustering algorithmss:
 
   a) labelled by the gender
 
