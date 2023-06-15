@@ -32,8 +32,11 @@ ma=scale(ma)
 3. Apply MDS, tSNE, KODAMA
 ```
 res_MDS=cmdscale(dist(ma))
+colnames(res_MDS) <- c("First Dimension", "Second Dimension")
 res_tSNE=Rtsne(ma)$Y
-res_UMAP = umap(ma)$layout
+colnames(res_tSNE) <- c("First Dimension", "Second Dimension")
+res_UMAP = umap(ma$layout
+colnames(res_UMAP) <- c("First Dimension", "Second Dimension")
 ```
 4. Apply KODAMA
 ```
@@ -54,10 +57,12 @@ plot(res_UMAP,pch=21,bg=labels,main="UMAP")
 plot(res_KODAMA_MDS,pch=21,bg=labels,main="KODAMA_MDS",ylim=range(res_KODAMA_MDS[,1]))
 plot(res_KODAMA_tSNE,pch=21,bg=labels,main="KODAMA_tSNE")
 plot(res_KODAMA_UMAP,pch=21,bg=labels,main="KODAMA_UMAP")
+
+
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/final%20one%20simulated.png" alt="hello-light" height="500" width="700" />
+    <img src="https://github.com/tkcaccia/KODAMA" alt="hello-light" height="500" width="700" />
   </p>
 </p>
 
