@@ -62,7 +62,7 @@ plot(res_KODAMA_UMAP,pch=21,bg=labels,main="KODAMA_UMAP")
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/Rplot01.pdf" alt="hello-light" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/Rplot02.png" alt="hello-light" />
   </p>
 </p>
 
