@@ -18,15 +18,7 @@ library(gmodels)
 The data is simulated with vertix function from KODAMA package with 2 dimensions and 8 noisy dimensions and then scaled
 
 ```
-dimensions=2
-size_cluster=50
-cluster_number=2^dimensions
-noisy_dimension <- 8
-v=matrix(rep(vertex(c(0,10),dims=dimensions),each=size_cluster),ncol=dimensions)
-ma=v+rnorm(length(v),sd = 0.2)
-if(noisy_dimension>0){
-  ma=cbind(ma,matrix(rnorm(cluster_number*size_cluster*noisy_dimension),ncol=noisy_dimension))}
-ma=scale(ma)
+ma <- vertex(c(1,10), dims = 2, noisy_dimension = 8, size_cluster = 50)
 ```
 
 3. Apply MDS, tSNE, KODAMA
