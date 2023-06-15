@@ -27,7 +27,7 @@ res_MDS=cmdscale(dist(ma))
 colnames(res_MDS) <- c("First Dimension", "Second Dimension")
 res_tSNE=Rtsne(ma)$Y
 colnames(res_tSNE) <- c("First Dimension", "Second Dimension")
-res_UMAP = umap(ma$layout
+res_UMAP = umap(ma)$layout
 colnames(res_UMAP) <- c("First Dimension", "Second Dimension")
 ```
 4. Apply KODAMA
