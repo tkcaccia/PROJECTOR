@@ -53,7 +53,7 @@ plot(res_KODAMA_UMAP,pch=21,bg=labels,main="KODAMA_UMAP")
   </p>
 </p>
 
-#### Generate simulated data of different noisy dimensions(1-20), then apply different algorithms and calculate the clustering efficiency of each one at different noisy levels using silhouette test.
+#### Simulated data of different noisy dimensions(1-20) are generated. Then apply different algorithms and calculate the clustering efficiency of each one at different noisy levels using silhouette test.
 
 ```
 noisy_dimension=c(0:20)
