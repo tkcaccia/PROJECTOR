@@ -21,6 +21,7 @@ importFrom("Rtsne", "Rtsne_neighbors")
 importFrom("umap", "umap.knn", "umap","umap.defaults")
 
 S3method(print,Rtsne.config)
+S3method(print,CMD.config)
 
 exportPattern(floyd,another,vertex,
               KODAMA,k.test,loads,
@@ -31,5 +32,5 @@ exportPattern(floyd,another,vertex,
               transformy,frequency_matching,
               RQ,Rtsne_neighbors,
               knn_Armadillo,
-              txtsummary,continuous.test,categorical.test,correlation.test,multi_analysis,pca,Rtsne.defaults,kabsch)
+              txtsummary,continuous.test,categorical.test,correlation.test,multi_analysis,pca,Rtsne.defaults,CMD.defaults,kabsch)
 
