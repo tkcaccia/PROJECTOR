@@ -139,7 +139,7 @@ for (i in 1:length(test)) {
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CI%20simulated.pdf" alt="hello-light" height="500" width="700" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CI%20simulated.pdf" alt="hello-light" />
   </p>
 </p>
 
