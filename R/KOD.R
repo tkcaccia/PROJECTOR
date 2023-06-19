@@ -393,7 +393,7 @@ spatial.knn = 10)
       Xspatial = spatial[landpoints, ]
     }
     else {
-      Xspatial = spatial
+      Xspatial = Xdata
     }
   }
   else {
@@ -402,7 +402,7 @@ spatial.knn = 10)
     Xfix = fix
     Xconstrain = constrain
     landpoints = 1:nsample
-    Xspatial = spatial
+    Xspatial = Xdata
   }
   nva = ncol(Xdata)
   nsa = nrow(Xdata)
@@ -442,9 +442,9 @@ spatial.knn = 10)
     
     sva = sample(nva, FUN_VAR, FALSE, NULL)
     ssa = c(whT, sample(whF, FUN_SAM, bagging, NULL))
-    if (is.matrix(spatial)) {
-      Xspatial_ssa = Xspatial[ssa, ]
-    }
+    
+    Xspatial_ssa = Xspatial[ssa, ]
+    
     x = Xdata[ssa, sva]
     xva = ncol(x)
     xsa = nrow(x)
@@ -513,15 +513,10 @@ spatial.knn = 10)
       xTdata = NULL
     }
 
-    if (is.matrix(spatial)) {
+
       xNeighbors = knn_Armadillo(as.matrix(Xspatial_ssa), as.matrix(x), 
                                  spatial.knn)$nn_index
-    }
-    else{
-      xNeighbors = knn_Armadillo(as.matrix(x), as.matrix(x), 
-                                 spatial.knn)$nn_index
-      
-    }
+
     options(warn=-1)
     yatta=0
     attr(yatta,"class")="try-error"
@@ -655,10 +650,14 @@ KODAMA.visualization=function(kk,method=c("t-SNE","MDS","UMAP"),config=NULL){
   dimensions=res_tsne$Y
   #res_tsne=within(res_tsne, rm(Y))
   res_tsne=res_tsne[names(res_tsne)!="Y"]
+    colnames(dimensions)[1:config$dims] = paste ("Dimension", 1:config$dims)
+    rownames(dimensions)=rownames(kk$data)
+    
   }
   if(mat=="MDS"){ 
     dimensions=cmdscale(kk$dissimilarity)
-
+    colnames(dimensions)[1:config$dims] = paste ("Dimension", 1:config$dims)
+    rownames(dimensions)=rownames(kk$data)
   }
   if(mat=="UMAP"){ 
     if(is.null(config)){
@@ -666,11 +665,11 @@ KODAMA.visualization=function(kk,method=c("t-SNE","MDS","UMAP"),config=NULL){
     }
     u=umap.knn(kk$knn_Armadillo$nn_index,kk$knn_Armadillo$distances)
     config$knn=u
-    
+
     dimensions = umap(kk$data,knn=u,config=config)$layout
+    colnames(dimensions)[1:config$n_components] = paste ("Dimension", 1:config$n_components)
+    rownames(dimensions)=rownames(kk$data)
   }
-  colnames(dimensions)[1:2]=c("First Dimension","Second Dimension")
-  rownames(dimensions)=rownames(kk$data)
   dimensions 
 }
 
