@@ -17,7 +17,7 @@ The data is simulated with vertix function from KODAMA package with 2 dimensions
 ma <- vertex(c(1,10), dims = 2, noisy_dimension = 8, size_cluster = 50)
 ```
 
-3. Apply MDS, tSNE, KODAMA
+3. Apply MDS, tSNE, UMAP
 ```
 res_MDS=cmdscale(dist(ma))
 colnames(res_MDS) <- c("First Dimension", "Second Dimension")
