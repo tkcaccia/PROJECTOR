@@ -25,7 +25,7 @@ colnames(res_tSNE) <- c("First Dimension", "Second Dimension")
 res_UMAP = umap(ma)$layout
 colnames(res_UMAP) <- c("First Dimension", "Second Dimension")
 ```
-###KODAMA
+### KODAMA
 ```
 kk=KODAMA.matrix(ma)
 res_KODAMA_MDS=KODAMA.visualization(kk,method = "MDS")
@@ -139,7 +139,7 @@ for (i in 1:length(test)) {
 ```
 <p>
   <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CI%20simulated.pdf" alt="hello-light" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CI%20simulated.png" alt="hello-light" />
   </p>
 </p>
 
