@@ -13,6 +13,11 @@ Rtsne.defaults <- list(
 )
 class(Rtsne.defaults) <- "Rtsne.config"
 
+MDS.defaults <- list(
+  dims = 2
+)
+class(MDS.defaults) <- "MDS.config"
+
 print.Rtsne.config <- function(x, ...) {
   if (!is(x, "Rtsne.config")) {
     umap.error("x is not a Rtsne configuration object")
@@ -38,6 +43,34 @@ print.Rtsne.config <- function(x, ...) {
   
   invisible(x)
 }
+
+
+print.MDS.config <- function(x, ...) {
+  if (!is(x, "MDS.config")) {
+    umap.error("x is not a MDS configuration object")
+  }
+  
+  # produce a string of form "  z:  " of total length width
+  padspaces <- function(z, width=24) {
+    padleft <- max(0, width-nchar(z)-2)
+    paste(c(rep(" ", padleft), z, ": "), collapse="")
+  }
+  
+  message("MDS configuration parameters")
+  primitives <- c("numeric", "integer", "character", "logical")
+  vapply(names(x), function(z) {
+    zval <- x[[z]]
+    if (sum(class(zval) %in% primitives)) {
+      message(padspaces(z), paste(zval, collapse=" "))
+    } else {
+      message(padspaces(z), "[", paste(class(zval), collapse=","), "]")
+    }
+    z
+  }, character(1))
+  
+  invisible(x)
+}
+
 
 kabsch <- function(pm, qm) {
   pm_dims <- dim(pm)
