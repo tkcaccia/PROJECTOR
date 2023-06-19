@@ -58,31 +58,11 @@ plot(res_KODAMA_UMAP,pch=21,bg=labels,main="KODAMA_UMAP")
   </p>
 </p>
 
-#### Compareing efficiency of clustering algorithm with different noisy 
-```
-sum <- data.frame(matrix(NA, nrow=20))
-df <- data.frame()
-files <- list.files(path=address, pattern="*.xlsx")
-for (i in 1:length(files) {
- name <- tools::file_path_sans_ext(files[i])
- file <- as.data.frame(read_excel(files[i])) ## if you have headers in your files ##
- df <- as.data.frame(t(as.data.frame(sapply(file,CI))))
- rownames(df) <- paste(rep(1:20),name, sep = ":")
- sum <- cbind(sum, df)
- names[i] <- name }
-sum <- sum[,-1]
-sum <- melt(setDT(sum), measure.vars = patterns("^mean", "^lower", "^upper"),
-             value.name = c("COEF_EST", "COEF_LOWER", "COEF_UPPER"))
-noisy= rep(c(1:20),6)
-sum <- cbind(noisy, sum)
-colnames(sum)[colnames(sum)=="variable"] <- "test"
-ggplot(sum, aes(x = noisy, y = COEF_EST, ymin = COEF_LOWER, ymax = COEF_UPPER)) +
-  geom_ribbon(aes(fill = test), alpha = 0.3) +
-  geom_line(aes(color = test))
-```
+#### Simulated data of different noisy dimensions(1-20) are generated. Then apply different algorithms and calculate the clustering efficiency of each one at different noisy levels using silhouette test.The confidence intervals for each clustering algorithm at different noisy level  are calculated and visualized. [Simulated data](https://github.com/tkcaccia/KODAMA/edit/main/docs/Simulated%20data.md). The clustering quality of KODAM is high compared to othe ther algorithms. 
+
 <p>
   <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CI.png" alt="hello-light" height="500" width="700" />
+    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/CI%20simulated.png" alt="hello-light" height="500" width="700" />
   </p>
 </p>
 
