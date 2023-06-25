@@ -75,6 +75,22 @@ BEGIN_RCPP
     return __result;
 END_RCPP
 }
+// KNNPLSDACV
+arma::ivec KNNPLSDACV(arma::mat x, arma::ivec cl, arma::ivec constrain, int k,arma::mat pos,int knn);
+RcppExport SEXP KODAMA_KNNPLSDACV(SEXP xSEXP, SEXP clSEXP, SEXP constrainSEXP, SEXP kSEXP, SEXP posSEXP, SEXP knnSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
+    Rcpp::traits::input_parameter< arma::ivec >::type cl(clSEXP);
+    Rcpp::traits::input_parameter< arma::ivec >::type constrain(constrainSEXP);
+    Rcpp::traits::input_parameter< int >::type k(kSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type pos(posSEXP);
+    Rcpp::traits::input_parameter< int >::type knn(knnSEXP);
+    __result = Rcpp::wrap(KNNPLSDACV(x, cl, constrain, k, pos, knn));
+    return __result;
+END_RCPP
+}
 // PLSDACV
 arma::ivec PLSDACV(arma::mat x, arma::ivec cl, arma::ivec constrain, int k);
 RcppExport SEXP KODAMA_PLSDACV(SEXP xSEXP, SEXP clSEXP, SEXP constrainSEXP, SEXP kSEXP) {
