@@ -369,7 +369,7 @@ arma::ivec KNNCV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
   return Ytest;
 }
 
-            '
+            
 arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp,arma::mat POS) {
   
   // n <-dim(Xtrain)[1]
