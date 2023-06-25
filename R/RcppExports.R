@@ -5,6 +5,12 @@ floyd <- function(data) {
     .Call('KODAMA_floyd', PACKAGE = 'KODAMA', data)
 }
 
+pred_pls_pos <- function(Xtrain,Ytrain,Xtest,ncomp,POStrain,POStest,k) {
+    .Call('KODAMA_pred_pls_pos', PACKAGE = 'KODAMA', Xtrain,Ytrain,Xtest,ncomp,POStrain,POStest,k)
+}
+
+
+
 knn.kodama <- function(Xtrain, 
                        Ytrain, 
                        Xtest, 
