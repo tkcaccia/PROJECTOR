@@ -817,7 +817,7 @@ arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma:
   for (int i=0; i<10; i++) {
     arma::uvec w1,w9;
     arma::ivec temp;
-    arma::mat Xtrain,Xtest,POStrain,POStest,POS_knn;
+    arma::mat Xtrain,Xtest,POStrain,POStest;
     arma::mat Ytrain;
     
     w1=find(fold==i);
@@ -832,7 +832,7 @@ arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma:
       POStrain=pos.rows(w9);
       POStest=pos.rows(w1);
       List res=knn_Armadillo(POStrain,POStest,knn);
-      POS_knn=res[0];
+      arma::mat POS_knn=res[0];
 
       Ytest.rows(w1)=pred_pls_pos(Xtrain,Ytrain,Xtest,k,POS_knn);
 
