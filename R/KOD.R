@@ -799,7 +799,8 @@ core_cpp <- function(x,
                      constrain=NULL, 
                      fix=NULL, 
                      shake=FALSE,
-                     xNeighbors=NULL) {
+                     pos=NULL,
+                     neighbors=10) {
   
   if (is.null(constrain)) 
     constrain = 1:length(clbest)
@@ -812,11 +813,11 @@ core_cpp <- function(x,
   }else{
     proj=2
   }
-  matchFUN=pmatch(FUN[1],c("KNN","PLS-DA","KNNPLS-DA))
+  matchFUN=pmatch(FUN[1],c("KNN","PLS-DA","KNNPLS-DA"))
   if(is.na(matchFUN))
     stop("The classifier to be considered must be  \"PLS-DA\" or \"KNN\".")
   
-  out=corecpp(x, xTdata,clbest, Tcycle, matchFUN, fpar, constrain, fix, shake,proj,xNeighbors)
+  out=corecpp(x, xTdata,clbest, Tcycle, matchFUN, fpar, constrain, fix, shake,proj,pos,neighbors)
   return(out)
 }
 
