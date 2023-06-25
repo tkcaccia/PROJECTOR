@@ -24,7 +24,7 @@ S3method(print,Rtsne.config)
 S3method(print,CMD.config)
 
 exportPattern(floyd,another,vertex,
-              KODAMA,k.test,loads,
+              KODAMA,k.test,loads,PLSDACV,KNNPLSDACV,
               mcplot,core_cpp,floyd,
               pls.double.cv,knn.double.cv,knn.kodama,
               pls.kodama,dinisurface,helicoid,spirals,
