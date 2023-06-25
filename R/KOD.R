@@ -812,7 +812,7 @@ core_cpp <- function(x,
   }else{
     proj=2
   }
-  matchFUN=pmatch(FUN[1],c("KNN","PLS-DA"))
+  matchFUN=pmatch(FUN[1],c("KNN","PLS-DA","KNNPLS-DA))
   if(is.na(matchFUN))
     stop("The classifier to be considered must be  \"PLS-DA\" or \"KNN\".")
   
