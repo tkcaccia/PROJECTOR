@@ -1923,6 +1923,7 @@ List corecpp(arma::mat x,
         min_val = v22.max(index);
         pp(i)=index+1;
       }
+    }
     if(FUN==3){
       arma::mat lcm=transformy(clbest);
       List res=knn_Armadillo(x,xTdata,neighbors);
