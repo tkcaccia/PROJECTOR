@@ -202,8 +202,8 @@ double_knn_cv <- function(x, yy, constrain, type, verbose, compmax,optim,scaling
 }
 
 
-corecpp <- function(x, xTdata, clbest, Tcycle, FUN, fpar, constrain, fix, shake, proj, xNeighbors) {
-    .Call('KODAMA_corecpp', PACKAGE = 'KODAMA', x, xTdata, clbest, Tcycle, FUN, fpar, constrain, fix, shake, proj, xNeighbors)
+corecpp <- function(x, xTdata, clbest, Tcycle, FUN, fpar, constrain, fix, shake, proj, pos, neighbors) {
+    .Call('KODAMA_corecpp', PACKAGE = 'KODAMA', x, xTdata, clbest, Tcycle, FUN, fpar, constrain, fix, shake, proj, pos, neighbors)
 }
 
 knn_Armadillo <- function(Xtrain, Xtest, k) {
