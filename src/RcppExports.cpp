@@ -8,24 +8,7 @@
 
 using namespace Rcpp;
 
-// [[Rcpp::export]]
-arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp,arma::mat POStrain,arma::mat POStest,int k);
-RcppExport SEXP KODAMA_pred_pls_pos(SEXP XtrainSEXP,SEXP YtrainSEXP,SEXP XtestSEXP,SEXP ncompSEXP,SEXP POStrainSEXP,SEXP POStestSEXP,SEXP kSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject __result;
-    Rcpp::RNGScope __rngScope;    
-  Rcpp::traits::input_parameter< arma::mat >::type Xtrain(XtrainSEXP);
-  Rcpp::traits::input_parameter< arma::ivec >::type Ytrain(YtrainSEXP);
-  Rcpp::traits::input_parameter< arma::mat >::type Xtest(XtestSEXP);
-  Rcpp::traits::input_parameter< int >::type ncomp(ncompSEXP);
-  Rcpp::traits::input_parameter< arma::mat >::type POStrain(POStrainSEXP);
-  Rcpp::traits::input_parameter< arma::mat >::type POStest(POStestSEXP);
-  Rcpp::traits::input_parameter< int >::type k(kSEXP);
 
-        __result = Rcpp::wrap(pred_pls_pos(Xtrain,Ytrain,Xtest,ncomp,POStrain,POStest,k));
-    return __result;
-END_RCPP
-}
 // floyd
 arma::mat floyd(arma::mat data);
 RcppExport SEXP KODAMA_floyd(SEXP dataSEXP) {
