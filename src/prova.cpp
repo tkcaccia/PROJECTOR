@@ -817,7 +817,7 @@ arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma:
   for (int i=0; i<10; i++) {
     arma::uvec w1,w9;
     arma::ivec temp;
-    arma::mat Xtrain,Xtest,POStrain,POStest;
+    arma::mat Xtrain,Xtest,POStrain,POStest,POS_knn;
     arma::mat Ytrain;
     
     w1=find(fold==i);
