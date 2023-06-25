@@ -790,6 +790,105 @@ arma::ivec PLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
 }
 
 
+arma::mat knn_nn_index(arma::mat Xtrain,arma::mat Xtest,int k) {
+  double* data = Xtrain.memptr();
+  double* query = Xtest.memptr();
+  int D=Xtrain.n_cols;
+  int ND=Xtrain.n_rows;
+  int NQ=Xtest.n_rows;
+  double EPS=0;
+  int SEARCHTYPE=1;
+  int USEBDTREE=0;
+  double SQRAD=0;
+  int nn=NQ*k;
+  int *nn_index= new int[nn];
+  double *distances= new double[nn];
+  arma::imat Ytest(NQ,k);
+  get_NN_2Set(data,query,&D,&ND,&NQ,&k,&EPS,&SEARCHTYPE,&USEBDTREE,&SQRAD,nn_index,distances);
+  
+
+  arma::mat nn_indexArmadillo(NQ,k);
+  for(int j=0;j<NQ;j++){
+    for(int i=0;i<k;i++){
+      nn_indexArmadillo(j,i)=nn_index[j*k+i];
+    }
+  }
+  
+  delete [] nn_index;
+  return nn_indexArmadillo;
+}
+
+
+// [[Rcpp::export]]
+arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma::mat pos,int knn) {
+  
+  arma::mat clmatrix=transformy(cl);
+  
+  arma::mat Ytest(clmatrix.n_rows,clmatrix.n_cols);
+  
+  int xsa_t = max(constrain);
+  
+  IntegerVector frame = seq_len(xsa_t);
+
+  IntegerVector v=samplewithoutreplace(frame,xsa_t);
+  
+  
+  int mm=constrain.size();
+  arma::ivec fold(mm);
+  for (int i=0; i<mm; i++) 
+    fold[i]=v[constrain(i)-1]%10;
+  
+  
+  
+  
+  for (int i=0; i<10; i++) {
+    arma::uvec w1,w9;
+    arma::ivec temp;
+    arma::mat Xtrain,Xtest;
+    arma::mat Ytrain;
+    
+    w1=find(fold==i);
+    w9=find(fold!=i);
+    temp=unique(cl(w1));
+    if(temp.size()>1){
+      Xtrain=x.rows(w9);
+      Xtest=x.rows(w1);
+      Ytrain=clmatrix.rows(w9);
+
+      
+      POStrain=pos.rows(w9);
+      POStest=pos.rows(w1);
+      
+      POS_knn=knn_nn_index(POStrain,POStest,knn)
+
+      Ytest.rows(w1)=pred_pls_pos(Xtrain,Ytrain,Xtest,k,POS_knn);
+
+      
+      
+    }else{
+      Ytest.rows(w1)=clmatrix.rows(w1);
+      
+    }
+  }  
+  
+  int mm2=constrain.size();
+  arma::ivec pp(mm2);
+  
+  //min_val is modified to avoid a warning
+  double min_val=0;
+  min_val++;
+  arma::uvec ww;
+  for (int i=0; i<mm2; i++) {
+    ww=i;
+    arma::mat v22=Ytest.rows(ww);
+    arma::uword index;                                                                                                                                                                                                                                                                                                                
+    min_val = v22.max(index);
+    pp(i)=index+1;
+  }
+  return pp;
+}
+
+
 
 
 // [[Rcpp::export]]
