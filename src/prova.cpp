@@ -1764,7 +1764,8 @@ List corecpp(arma::mat x,
              NumericVector fix,
              bool shake,
              int proj,
-             arma::mat xNeighbors) {
+             arma::mat pos,
+             int neighbors) {
   
   arma::ivec cvpred=clbest;
   arma::ivec cvpredbest;
@@ -1774,6 +1775,9 @@ List corecpp(arma::mat x,
   }
   if(FUN==2){
     cvpredbest=PLSDACV(x,clbest,constrain,fpar);    
+  }
+  if(FUN==3){
+    cvpredbest=KNNPLSDACV(x,clbest,constrain,fpar,pos,neighbors);    
   }
 
   double accbest;
@@ -1810,26 +1814,26 @@ List corecpp(arma::mat x,
 
     int nn_temp=(unif_rand()*nconc)+1;
   
-    int xknn=xNeighbors.n_cols;
-    int clbest_elem=clbest.n_elem;
-    for(unsigned jj=0;jj<clbest_elem;jj++){
+ //   int xknn=xNeighbors.n_cols;
+  //  int clbest_elem=clbest.n_elem;
+ //   for(unsigned jj=0;jj<clbest_elem;jj++){
+//
+//      int check=0;
+//      for(int jj_knn=0; jj_knn<xknn; jj_knn++){
+//        
+//        unsigned wjj_knn_sele=xNeighbors(jj,jj_knn)-1;
 
-      int check=0;
-      for(int jj_knn=0; jj_knn<xknn; jj_knn++){
         
-        unsigned wjj_knn_sele=xNeighbors(jj,jj_knn)-1;
-
-        
-        if(cvpredbest[jj]==cl[wjj_knn_sele]){
-          check=1;
-        }
-      }
-      if(check==0){
-        cvpredbest[jj]=cl[jj];
-      }
+ //       if(cvpredbest[jj]==cl[wjj_knn_sele]){
+ //         check=1;
+ //       }
+ //     }
+ //     if(check==0){
+  //      cvpredbest[jj]=cl[jj];
+ //     }
       
 
-    }
+ //   }
     
   
   //////////////////////////////////////////////////
@@ -1870,8 +1874,10 @@ List corecpp(arma::mat x,
       cvpred=KNNCV(x,cl,constrain,fpar);
     }
     if(FUN==2){
-
       cvpred=PLSDACV(x,cl,constrain,fpar);  
+    }
+    if(FUN==3){
+      cvpred=KNNPLSDACV(x,cl,constrain,fpar,pos,neighbors);  
     }
     double accTOT= accuracy(cl,cvpred);
     if (accTOT > accbest) {
@@ -1906,6 +1912,23 @@ List corecpp(arma::mat x,
     if(FUN==2){
       arma::mat lcm=transformy(clbest);
       projmat=pred_pls(x,lcm,xTdata,fpar);
+      //min_val is modified to avoid a warning
+      double min_val=0;
+      min_val++;
+      arma::uvec ww;
+      for (int i=0; i<mm2; i++) {
+        ww=i;
+        arma::mat v22=projmat.rows(ww);
+        arma::uword index;                                                                                                                                                                                                                                                                                                                
+        min_val = v22.max(index);
+        pp(i)=index+1;
+      }
+    if(FUN==3){
+      arma::mat lcm=transformy(clbest);
+      List res=knn_Armadillo(x,xTdata,neighbors);
+      arma::mat POS_knn=res[0];
+      
+      projmat=pred_pls_pos(x,lcm,xTdata,fpar,POS_knn);
       //min_val is modified to avoid a warning
       double min_val=0;
       min_val++;
