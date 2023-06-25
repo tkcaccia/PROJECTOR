@@ -370,7 +370,7 @@ arma::ivec KNNCV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
 }
 
 
-
+// [[Rcpp::export]]
 arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp,arma::mat POStrain,arma::mat POStest,int k) {
   
   // n <-dim(Xtrain)[1]
