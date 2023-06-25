@@ -369,9 +369,8 @@ arma::ivec KNNCV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
   return Ytest;
 }
 
-
-// [[Rcpp::export]]
-arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp,arma::mat POStrain,arma::mat POStest,int k) {
+            '
+arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp,arma::mat POS) {
   
   // n <-dim(Xtrain)[1]
   int n = Xtrain.n_rows;
@@ -521,37 +520,24 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
 
 
   
-  double* data = POStrain.memptr();
-  double *label=Ytrain.memptr();
-  double* query = POStest.memptr();
-
-  
-  int maxlabel=max(Ytrain);
-  int D=POStrain.n_cols;
-  int ND=POStrain.n_rows;
-  int NQ=POStest.n_rows;
-  double EPS=0;
-  int SEARCHTYPE=1;
-  int USEBDTREE=0;
-  double SQRAD=0;
-  int nn=NQ*k;
-  int *nn_index= new int[nn];
-  double *distances= new double[nn];
-  arma::mat Mtest(NQ,m);
+  int k=POS.n_cols;
+  double* nn_index = POS.memptr();
+  arma::umat Mtest(w,m);
   Mtest.zeros();
-  get_NN_2Set(data,query,&D,&ND,&NQ,&k,&EPS,&SEARCHTYPE,&USEBDTREE,&SQRAD,nn_index,distances);
-  for(int j=0;j<NQ;j++){
-    scale.zeros();
+  for(int j=0;j<w;j++){
+
     // m is the number of column of Ytrain
     for(int i=0;i<k;i++){
 
-      Mtest.row(j)=Mtest.row(j) || Ytrain.row(nn_index[j*k+i]);
+
+      arma::umat temp=Ytrain.row(nn_index[j*k+i]-1)==1;
+
+      Mtest.row(j)= temp || Mtest.row(j)==1;// Ytrain.row(nn_index[j*k+i]-1);
     }
+    
   }
-  delete [] nn_index;
-  delete [] distances;
   
-  sli=sli*Mtest;
+  sli=sli % Mtest;
 
   
   return sli;
