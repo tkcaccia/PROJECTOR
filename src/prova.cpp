@@ -794,7 +794,7 @@ arma::ivec PLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
 
 // [[Rcpp::export]]
 arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma::mat pos,int knn) {
-  
+  Rcout<<"Prima";
   arma::mat clmatrix=transformy(cl);
   
   arma::mat Ytest(clmatrix.n_rows,clmatrix.n_cols);
@@ -858,6 +858,7 @@ arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma:
     min_val = v22.max(index);
     pp(i)=index+1;
   }
+Rcout<<"Dopo";
   return pp;
 }
 
