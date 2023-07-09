@@ -837,8 +837,10 @@ arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma:
       Ytest.rows(w1)=pred_pls_pos(Xtrain,Ytrain,Xtest,k,POS_knn);
 
       
+      Rcout<<"Mentre";
       
     }else{
+      Rcout<<"Eccezione";
       Ytest.rows(w1)=clmatrix.rows(w1);
       
     }
