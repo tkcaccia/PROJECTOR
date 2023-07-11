@@ -452,9 +452,9 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
   for (int a=0; a<ncomp; a++) {
     //qq<-svd(S)$v[,1]
     //rr <- S%*%qq    
-
+Rcout<<"Prima";
     svd_econ(svd_U,svd_s,svd_V,S,"left");
-
+Rcout<<"Dopo";
 
     rr=svd_U.col( 0 );
 
