@@ -756,7 +756,7 @@ arma::ivec PLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
 
     }else{
       Ytest.rows(w1)=clmatrix.rows(w1);
-      Ytest.rows(w1)=temp;
+
     }
   }  
   
