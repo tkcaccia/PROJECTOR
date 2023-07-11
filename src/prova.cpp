@@ -747,7 +747,6 @@ arma::ivec PLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
     fold[i]=v[constrain(i)-1]%10;
   
   
-  Rcout<<"CV\n";
   
   for (int i=0; i<10; i++) {
     arma::uvec w1,w9;
@@ -764,15 +763,10 @@ arma::ivec PLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
       Ytrain=clmatrix.rows(w9);
 
       
-      Rcout<<"Training set\n";
-      Rcout<<Ytrain;
-     
-      Rcout<<"\n";
+
 
       Ytest.rows(w1)=pred_pls(Xtrain,Ytrain,Xtest,k);
 
-      Rcout<<"Result set\n";
-      Rcout<<Ytest;
      
       Rcout<<"\n";
     }else{
