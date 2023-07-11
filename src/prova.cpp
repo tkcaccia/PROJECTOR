@@ -761,7 +761,7 @@ arma::ivec PLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
     
     w1=find(fold==i);
     w9=find(fold!=i);
-    temp=unique(cl(w1));
+    temp=unique(cl(w9));    //  I changed this temp=unique(cl(w9));
     if(temp.size()>1){
       Xtrain=x.rows(w9);
       Xtest=x.rows(w1);
