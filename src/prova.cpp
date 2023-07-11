@@ -822,9 +822,9 @@ Rcout<<"new cycle\n";
       POStest=pos.rows(w1);
       List res=knn_Armadillo(POStrain,POStest,knn);
       arma::mat POS_knn=res[0];
-Rcout<<"prima\n";
+
       Ytest.rows(w1)=pred_pls_pos(Xtrain,Ytrain,Xtest,k,POS_knn);
-Rcout<<"dopo\n";
+
       
       
     }else{
