@@ -760,7 +760,8 @@ arma::ivec PLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
       Xtest=x.rows(w1);
       Ytrain=clmatrix.rows(w9);
       
-      
+      Rcout<<Xtest;
+      Rcout<<"next";
 
       Ytest.rows(w1)=pred_pls(Xtrain,Ytrain,Xtest,k);
 
