@@ -727,6 +727,9 @@ arma::mat transformy(arma::ivec y){
 // [[Rcpp::export]]
 arma::ivec PLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
   
+      Rcout<<"PLSDACV\n";
+      Rcout<<cl;
+  
   arma::mat clmatrix=transformy(cl);
   
   arma::mat Ytest(clmatrix.n_rows,clmatrix.n_cols);
