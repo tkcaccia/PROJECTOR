@@ -631,37 +631,41 @@ arma::mat pred_pls(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp) 
     //qq<-svd(S)$v[,1]
     //rr <- S%*%qq    
 
+  Rcout<<"-1";
     svd_econ(svd_U,svd_s,svd_V,S,"left");
-
+  Rcout<<"-2";
 
     rr=svd_U.col( 0 );
-
+  Rcout<<"-3";
     // tt<-scale(X%*%rr,scale=FALSE)
     tt=X*rr; 
+  Rcout<<"-4";
     arma::mat mtt=mean(tt,0);
+  Rcout<<"-5";
     tt.each_row()-=mtt;
+  Rcout<<"-6";
     //tnorm<-sqrt(sum(tt*tt))
     double tnorm=sqrt(sum(sum(tt%tt)));
     
     //tt<-tt/tnorm
     tt/=tnorm;
-    
+  Rcout<<"-7";  
     //rr<-rr/tnorm
     rr/=tnorm;
-    
+  Rcout<<"-8";  
     // pp <- crossprod(X,tt)
     pp=trans(X)*tt;
-    
+  Rcout<<"-9";    
     // qq <- crossprod(Y,tt)
     qq=trans(Y)*tt;
     
-
+  Rcout<<"-10";
     //uu <- Y%*%qq
     uu=Y*qq;
     
     //vv<-pp
     vv=pp;
-    
+Rcout<<"-11";  
     if(a>0){
       //vv<-vv-VV%*%crossprod(VV,pp)
       vv-=VV*(trans(VV)*pp);
@@ -669,13 +673,13 @@ arma::mat pred_pls(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp) 
       //uu<-uu-TT%*%crossprod(TT,uu)
       uu-=TT*(trans(TT)*uu);
     }
-
+  Rcout<<"-12";
     //vv <- vv/sqrt(sum(vv*vv))
     vv/=sqrt(sum(sum(vv%vv)));
     
     //S <- S-vv%*%crossprod(vv,S)
     S-=vv*(trans(vv)*S);
-    
+  Rcout<<"-13";   
     //RR[,a]=rr
     RR.col(a)=rr;
     TT.col(a)=tt;
@@ -684,21 +688,18 @@ arma::mat pred_pls(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp) 
     VV.col(a)=vv;
     UU.col(a)=uu;
     B.slice(a)=RR*trans(QQ);
-
+  Rcout<<"-14";
     Ypred.slice(a)=Xtest*B.slice(a);
-
+  Rcout<<"-15";
   } 
-  Rcout<<"1";
   for (int a=0; a<ncomp; a++) {
     arma::mat temp1=Ypred.slice(a);
     temp1.each_row()+=mY;
     Ypred.slice(a)=temp1;
   }  
 
-  Rcout<<"2";
   arma::mat sli=Ypred.slice(ncomp-1);
   
-  Rcout<<"3";
   return sli;
   
   
