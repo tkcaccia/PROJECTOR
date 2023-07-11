@@ -744,7 +744,7 @@ arma::ivec PLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
     fold[i]=v[constrain(i)-1]%10;
   
   
-  
+  Rcout<<"CV\n";
   
   for (int i=0; i<10; i++) {
     arma::uvec w1,w9;
@@ -759,14 +759,19 @@ arma::ivec PLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
       Xtrain=x.rows(w9);
       Xtest=x.rows(w1);
       Ytrain=clmatrix.rows(w9);
+
       
+      Rcout<<"Training set\n";
       Rcout<<Ytrain;
-      Rcout<<"next";
+     
+      Rcout<<"\n";
 
       Ytest.rows(w1)=pred_pls(Xtrain,Ytrain,Xtest,k);
 
-      
-      
+      Rcout<<"Result set\n";
+      Rcout<<Ytest;
+     
+      Rcout<<"\n";
     }else{
       Ytest.rows(w1)=clmatrix.rows(w1);
       
@@ -840,10 +845,10 @@ arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma:
       
       
     }else{
-      Rcout<<"Eccezione-Prima";
+
       Ytest.rows(w1)=clmatrix.rows(w1);
       
-      Rcout<<"Eccezione-Dopo";
+
     }
   }  
   
