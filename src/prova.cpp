@@ -782,7 +782,8 @@ arma::ivec PLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
 
 // [[Rcpp::export]]
 arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma::mat pos,int knn) {
-
+Rcout<<cl
+Rcout<<"new cycle\n";
   arma::mat clmatrix=transformy(cl);
   
   arma::mat Ytest(clmatrix.n_rows,clmatrix.n_cols);
@@ -821,9 +822,9 @@ arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma:
       POStest=pos.rows(w1);
       List res=knn_Armadillo(POStrain,POStest,knn);
       arma::mat POS_knn=res[0];
-
+Rcout<<"prima\n";
       Ytest.rows(w1)=pred_pls_pos(Xtrain,Ytrain,Xtest,k,POS_knn);
-
+Rcout<<"dopo\n";
       
       
     }else{
