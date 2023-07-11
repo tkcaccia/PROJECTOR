@@ -688,13 +688,17 @@ arma::mat pred_pls(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp) 
     Ypred.slice(a)=Xtest*B.slice(a);
 
   } 
+  Rcout<<"1";
   for (int a=0; a<ncomp; a++) {
     arma::mat temp1=Ypred.slice(a);
     temp1.each_row()+=mY;
     Ypred.slice(a)=temp1;
   }  
 
+  Rcout<<"2";
   arma::mat sli=Ypred.slice(ncomp-1);
+  
+  Rcout<<"3";
   return sli;
   
   
@@ -764,7 +768,6 @@ arma::ivec PLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
 
       
 
-   Rcout<<pred_pls(Xtrain,Ytrain,Xtest,k);
       Ytest.rows(w1)=pred_pls(Xtrain,Ytrain,Xtest,k);
 
     }else{
