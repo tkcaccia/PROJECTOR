@@ -764,11 +764,9 @@ arma::ivec PLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
 
       
 
-
+   Rcout<<pred_pls(Xtrain,Ytrain,Xtest,k);
       Ytest.rows(w1)=pred_pls(Xtrain,Ytrain,Xtest,k);
 
-     
-      Rcout<<"\n";
     }else{
       Ytest.rows(w1)=clmatrix.rows(w1);
       
