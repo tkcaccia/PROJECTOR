@@ -802,8 +802,7 @@ arma::ivec PLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
 
 // [[Rcpp::export]]
 arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma::mat pos,int knn) {
-Rcout<<cl;
-Rcout<<"new cycle\n";
+
   arma::mat clmatrix=transformy(cl);
   
   arma::mat Ytest(clmatrix.n_rows,clmatrix.n_cols);
