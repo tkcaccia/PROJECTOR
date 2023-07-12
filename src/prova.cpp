@@ -855,7 +855,8 @@ arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma:
   }  
   int tot=Ytest.size();
   for(int i=0; i<tot;i++){
-    if(Ytest.elem(i)==0){
+    int vall=Ytest.elem(i);
+    if(vall==0){
       Ytest.elem(i)=-999
         }
   }
