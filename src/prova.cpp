@@ -856,7 +856,7 @@ arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma:
 
   Ytest.elem( find(Ytest==0) ) -= 999.0;
   
-  Rcout<<Ytest;
+ 
   int mm2=constrain.size();
   arma::ivec pp(mm2);
   
