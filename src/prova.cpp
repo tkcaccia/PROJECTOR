@@ -853,7 +853,7 @@ arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma:
 
     }
   }  
-  
+  Rcout<<Ytest;
   int mm2=constrain.size();
   arma::ivec pp(mm2);
   
