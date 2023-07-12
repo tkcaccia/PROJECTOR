@@ -449,6 +449,11 @@ spatial.knn = 10)
             FUN_VAR)
     f.par = FUN_VAR
   }
+    if (f.par > FUN_VAR & FUN[1] == "KNNPLS-DA") {
+    message("The number of components selected for PLS-DA is too high and it will be automatically reduced to ", 
+            FUN_VAR)
+    f.par = FUN_VAR
+  }
   vect_acc = matrix(NA, nrow = M, ncol = Tcycle)
   accu = NULL
   whF = which(!Xfix)
