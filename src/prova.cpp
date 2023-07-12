@@ -375,22 +375,10 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
     Rcout<<"PRIMA";
     Rcout<<"\n";
 
-      Rcout<<Xtrain;
+      Rcout<<"1";
     Rcout<<"\n";
   
-      Rcout<<Ytrain;
-    Rcout<<"\n";
-  
-      Rcout<<Xtest;
-    Rcout<<"\n";
-  
-  
-      Rcout<<ncomp;
-    Rcout<<"\n";
-  
-  
-      Rcout<<POS;
-    Rcout<<"\n";
+
   
   
   // n <-dim(Xtrain)[1]
@@ -409,7 +397,12 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
   
   //X=Xtrain
   arma::mat X=Xtrain;
+
   
+      Rcout<<"2";
+    Rcout<<"\n";
+  
+
   
   // X <- scale(Xtrain,center=TRUE,scale=FALSE)
   // Xtest <-scale(Xtest,center=mX)
@@ -468,14 +461,31 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
   arma::mat tt;
   arma::mat uu;
   arma::mat vv;
+
   
+      Rcout<<"3";
+    Rcout<<"\n";
+  
+
   // for(a in 1:ncomp){
     for (int a=0; a<ncomp; a++) {
       //qq<-svd(S)$v[,1]
       //rr <- S%*%qq    
+
+      Rcout<<"4";
+    Rcout<<"\n";
+  
+
+      
       svd_econ(svd_U,svd_s,svd_V,S,"left");
       
       rr=svd_U.col( 0 );
+
+      
+      Rcout<<"5";
+    Rcout<<"\n";
+  
+
       
       // tt<-scale(X%*%rr,scale=FALSE)
       tt=X*rr; 
@@ -525,9 +535,17 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
       VV.col(a)=vv;
       UU.col(a)=uu;
       B.slice(a)=RR*trans(QQ);
-      
+   
+      Rcout<<"6";
+    Rcout<<"\n";
+  
+   
       Ypred.slice(a)=Xtest*B.slice(a);
       
+      Rcout<<"7";
+    Rcout<<"\n";
+  
+
     } 
     for (int a=0; a<ncomp; a++) {
       arma::mat temp1=Ypred.slice(a);
@@ -535,9 +553,17 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
       Ypred.slice(a)=temp1;
     }  
     
+      Rcout<<"8";
+    Rcout<<"\n";
+  
+
     arma::mat sli=Ypred.slice(ncomp-1);
     
     
+      Rcout<<"9";
+    Rcout<<"\n";
+  
+
     
     int k=POS.n_cols;
     double* nn_index = POS.memptr();
@@ -559,6 +585,10 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
       
     }
     
+      Rcout<<"10";
+    Rcout<<"\n";
+  
+
     sli=sli % Mtest;
     
     
