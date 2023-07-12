@@ -369,7 +369,6 @@ arma::ivec KNNCV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
   return Ytest;
 }
 
-            
 arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp,arma::mat POS) {
   
   // n <-dim(Xtrain)[1]
@@ -395,7 +394,7 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
   arma::mat mX=mean(Xtrain,0);
   X.each_row()-=mX;
   Xtest.each_row()-=mX;
-
+  
   arma::mat Y=Ytrain;
   
   // Y <- scale(Ytrain,center=TRUE,scale=FALSE)
@@ -447,105 +446,105 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
   arma::mat tt;
   arma::mat uu;
   arma::mat vv;
-
-  // for(a in 1:ncomp){
-  for (int a=0; a<ncomp; a++) {
-    //qq<-svd(S)$v[,1]
-    //rr <- S%*%qq    
-Rcout<<"Prima";
-    svd_econ(svd_U,svd_s,svd_V,S,"left");
-Rcout<<"Dopo";
-
-    rr=svd_U.col( 0 );
-
-    // tt<-scale(X%*%rr,scale=FALSE)
-    tt=X*rr; 
-    arma::mat mtt=mean(tt,0);
-    tt.each_row()-=mtt;
-    //tnorm<-sqrt(sum(tt*tt))
-    double tnorm=sqrt(sum(sum(tt%tt)));
-    
-    //tt<-tt/tnorm
-    tt/=tnorm;
-    
-    //rr<-rr/tnorm
-    rr/=tnorm;
-    
-    // pp <- crossprod(X,tt)
-    pp=trans(X)*tt;
-    
-    // qq <- crossprod(Y,tt)
-    qq=trans(Y)*tt;
-    
-
-    //uu <- Y%*%qq
-    uu=Y*qq;
-    
-    //vv<-pp
-    vv=pp;
-    
-    if(a>0){
-      //vv<-vv-VV%*%crossprod(VV,pp)
-      vv-=VV*(trans(VV)*pp);
-
-      //uu<-uu-TT%*%crossprod(TT,uu)
-      uu-=TT*(trans(TT)*uu);
-    }
-
-    //vv <- vv/sqrt(sum(vv*vv))
-    vv/=sqrt(sum(sum(vv%vv)));
-    
-    //S <- S-vv%*%crossprod(vv,S)
-    S-=vv*(trans(vv)*S);
-    
-    //RR[,a]=rr
-    RR.col(a)=rr;
-    TT.col(a)=tt;
-    PP.col(a)=pp;
-    QQ.col(a)=qq;
-    VV.col(a)=vv;
-    UU.col(a)=uu;
-    B.slice(a)=RR*trans(QQ);
-
-    Ypred.slice(a)=Xtest*B.slice(a);
-
-  } 
-  for (int a=0; a<ncomp; a++) {
-    arma::mat temp1=Ypred.slice(a);
-    temp1.each_row()+=mY;
-    Ypred.slice(a)=temp1;
-  }  
-
-  arma::mat sli=Ypred.slice(ncomp-1);
-
-
   
-  int k=POS.n_cols;
-  double* nn_index = POS.memptr();
-  arma::umat Mtest(w,m);
-  Mtest.zeros();
-  for(int j=0;j<w;j++){
+  // for(a in 1:ncomp){
+    for (int a=0; a<ncomp; a++) {
+      //qq<-svd(S)$v[,1]
+      //rr <- S%*%qq    
+      svd_econ(svd_U,svd_s,svd_V,S,"left");
+      
+      rr=svd_U.col( 0 );
+      
+      // tt<-scale(X%*%rr,scale=FALSE)
+      tt=X*rr; 
+      arma::mat mtt=mean(tt,0);
+      tt.each_row()-=mtt;
+      //tnorm<-sqrt(sum(tt*tt))
+      double tnorm=sqrt(sum(sum(tt%tt)));
+      
+      //tt<-tt/tnorm
+      tt/=tnorm;
+      
+      //rr<-rr/tnorm
+      rr/=tnorm;
+      
+      // pp <- crossprod(X,tt)
+      pp=trans(X)*tt;
+      
+      // qq <- crossprod(Y,tt)
+      qq=trans(Y)*tt;
+      
+      
+      //uu <- Y%*%qq
+      uu=Y*qq;
+      
+      //vv<-pp
+      vv=pp;
+      
+      if(a>0){
+        //vv<-vv-VV%*%crossprod(VV,pp)
+        vv-=VV*(trans(VV)*pp);
+        
+        //uu<-uu-TT%*%crossprod(TT,uu)
+        uu-=TT*(trans(TT)*uu);
+      }
+      
+      //vv <- vv/sqrt(sum(vv*vv))
+      vv/=sqrt(sum(sum(vv%vv)));
+      
+      //S <- S-vv%*%crossprod(vv,S)
+      S-=vv*(trans(vv)*S);
+      
+      //RR[,a]=rr
+      RR.col(a)=rr;
+      TT.col(a)=tt;
+      PP.col(a)=pp;
+      QQ.col(a)=qq;
+      VV.col(a)=vv;
+      UU.col(a)=uu;
+      B.slice(a)=RR*trans(QQ);
+      
+      Ypred.slice(a)=Xtest*B.slice(a);
+      
+    } 
+    for (int a=0; a<ncomp; a++) {
+      arma::mat temp1=Ypred.slice(a);
+      temp1.each_row()+=mY;
+      Ypred.slice(a)=temp1;
+    }  
+    
+    arma::mat sli=Ypred.slice(ncomp-1);
+    
+    
+    
+    int k=POS.n_cols;
+    double* nn_index = POS.memptr();
+    arma::umat Mtest(w,m);
+    Mtest.zeros();
+    for(int j=0;j<w;j++){
+      
+      // m is the number of column of Ytrain
+      for(int i=0;i<k;i++){
+        
+        
+        arma::umat temp=Ytrain.row(POS(j,i)-1)==1;
 
-    // m is the number of column of Ytrain
-    for(int i=0;i<k;i++){
 
-
-      arma::umat temp=Ytrain.row(nn_index[j*k+i]-1)==1;
-
-      Mtest.row(j)= temp || Mtest.row(j)==1;// Ytrain.row(nn_index[j*k+i]-1);
+        Mtest.row(j)= temp || Mtest.row(j)==1;
+      }
+         
+        
+      
     }
+    
+    sli=sli % Mtest;
+    
+    
+    return sli;
+    
     
   }
-  
-  sli=sli % Mtest;
-
-  
-  return sli;
-  
-  
-}
-
-
+   
 
 
 arma::mat pred_pls(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp) {
