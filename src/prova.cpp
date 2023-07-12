@@ -372,12 +372,6 @@ arma::ivec KNNCV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
 arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp,arma::mat POS) {
 
 
-    Rcout<<"PRIMA";
-    Rcout<<"\n";
-
-      Rcout<<"1";
-    Rcout<<"\n";
-  
 
   
   
@@ -398,9 +392,6 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
   //X=Xtrain
   arma::mat X=Xtrain;
 
-  
-      Rcout<<"2";
-    Rcout<<"\n";
   
 
   
@@ -463,8 +454,6 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
   arma::mat vv;
 
   
-      Rcout<<"3";
-    Rcout<<"\n";
   
 
   // for(a in 1:ncomp){
@@ -472,9 +461,6 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
       //qq<-svd(S)$v[,1]
       //rr <- S%*%qq    
 
-      Rcout<<"4";
-    Rcout<<"\n";
-  
 
       
       svd_econ(svd_U,svd_s,svd_V,S,"left");
@@ -482,9 +468,6 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
       rr=svd_U.col( 0 );
 
       
-      Rcout<<"5";
-    Rcout<<"\n";
-  
 
       
       // tt<-scale(X%*%rr,scale=FALSE)
@@ -536,15 +519,10 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
       UU.col(a)=uu;
       B.slice(a)=RR*trans(QQ);
    
-      Rcout<<"6";
-    Rcout<<"\n";
-  
    
       Ypred.slice(a)=Xtest*B.slice(a);
       
-      Rcout<<"7";
-    Rcout<<"\n";
-  
+ 
 
     } 
     for (int a=0; a<ncomp; a++) {
@@ -552,17 +530,11 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
       temp1.each_row()+=mY;
       Ypred.slice(a)=temp1;
     }  
-    
-      Rcout<<"8";
-    Rcout<<"\n";
-  
+
 
     arma::mat sli=Ypred.slice(ncomp-1);
     
     
-      Rcout<<"9";
-    Rcout<<"\n";
-  
 
     
     int k=POS.n_cols;
@@ -585,14 +557,10 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
       
     }
     
-      Rcout<<"10";
-    Rcout<<"\n";
-  
 
     sli=sli % Mtest;
     
     
-    Rcout<<"DOPO";
     return sli;
     
     
