@@ -370,6 +370,28 @@ arma::ivec KNNCV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
 }
 
 arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp,arma::mat POS) {
+
+
+    Rcout<<"PRIMA";
+    Rcout<<"\n";
+
+      Rcout<<Xtrain;
+    Rcout<<"\n";
+  
+      Rcout<<Ytrain;
+    Rcout<<"\n";
+  
+      Rcout<<Xtest;
+    Rcout<<"\n";
+  
+  
+      Rcout<<ncomp;
+    Rcout<<"\n";
+  
+  
+      Rcout<<POS;
+    Rcout<<"\n";
+  
   
   // n <-dim(Xtrain)[1]
   int n = Xtrain.n_rows;
@@ -540,6 +562,7 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
     sli=sli % Mtest;
     
     
+    Rcout<<"DOPO";
     return sli;
     
     
@@ -1853,7 +1876,6 @@ List corecpp(arma::mat x,
         cl.elem(whi)=as<arma::ivec>(soso2);
       }
     }
-    
     
     
     
