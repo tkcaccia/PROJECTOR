@@ -395,6 +395,8 @@ spatial.knn = 10)
     }
     nlandmarks = length(landmarks)
   }
+  
+  # If LMARK is TRUE, the landmark approach will be performed
   LMARK = (nsample > nlandmarks)
   if (LMARK) {
     if (length(landmarks) > 1) {
@@ -435,7 +437,12 @@ spatial.knn = 10)
     Xfix = fix
     Xconstrain = constrain
     landpoints = 1:nsample
-    Xspatial = Xdata
+    if (is.matrix(spatial)) {
+      Xspatial = spatial
+    }
+    else {
+      Xspatial = Xdata
+    }
   }
   nva = ncol(Xdata)
   nsa = nrow(Xdata)
