@@ -1777,7 +1777,8 @@ List corecpp(arma::mat x,
              NumericVector fix,
              bool shake,
              int proj,
-             arma::mat pos,
+             arma::mat posxy,
+             arma::mat posxyTdata,
              int neighbors) {
   
   arma::ivec cvpred=clbest;
@@ -1790,7 +1791,7 @@ List corecpp(arma::mat x,
     cvpredbest=PLSDACV(x,clbest,constrain,fpar);    
   }
   if(FUN==3){
-    cvpredbest=KNNPLSDACV(x,clbest,constrain,fpar,pos,neighbors);    
+    cvpredbest=KNNPLSDACV(x,clbest,constrain,fpar,posxy,neighbors);    
   }
 
   double accbest;
@@ -1889,7 +1890,7 @@ List corecpp(arma::mat x,
       cvpred=PLSDACV(x,cl,constrain,fpar);  
     }
     if(FUN==3){
-      cvpred=KNNPLSDACV(x,cl,constrain,fpar,pos,neighbors);  
+      cvpred=KNNPLSDACV(x,cl,constrain,fpar,posxy,neighbors);  
     }
     double accTOT= accuracy(cl,cvpred);
     if (accTOT > accbest) {
@@ -1938,7 +1939,7 @@ List corecpp(arma::mat x,
     }
     if(FUN==3){
       arma::mat lcm=transformy(clbest);
-      List res=knn_Armadillo(x,xTdata,neighbors);
+      List res=knn_Armadillo(posxy,posxyTdata,neighbors);
       arma::mat POS_knn=res[0];
       
       projmat=pred_pls_pos(x,lcm,xTdata,fpar,POS_knn);
