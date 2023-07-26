@@ -369,7 +369,7 @@ function (data, M = 100, Tcycle = 20, FUN_VAR = function(x) {
 }, bagging = FALSE, FUN = c("PLS-DA", "KNN"), f.par = 5, W = NULL, 
 constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000, 
 neighbors = min(c(landmarks, nrow(data)/3)) + 1, spatial = "profile", 
-spatial.knn = 10) 
+spatial.knn = 10,splitting=50) 
 {
   if (sum(is.na(data)) > 0) {
     stop("Missing values are present")
@@ -516,7 +516,7 @@ spatial.knn = 10)
       }
       else {
         #Test spatial modify x with Xspatial_ssa
-        clust = as.numeric(kmeans(Xspatial_ssa, 50)$cluster)
+        clust = as.numeric(kmeans(Xspatial_ssa, splitting)$cluster)
         tab = apply(table(clust, Xconstrain_ssa), 2, 
                     which.max)
         XW = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))
@@ -537,7 +537,7 @@ spatial.knn = 10)
         else {
           
           #Test spatial modify x with Xspatial_ssa
-          clust = as.numeric(kmeans(Xspatial_ssa, 50)$cluster)
+          clust = as.numeric(kmeans(Xspatial_ssa, splitting)$cluster)
           tab = apply(table(clust, Xconstrain_ssa), 2, 
                       which.max)
           constrain_temp = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))
