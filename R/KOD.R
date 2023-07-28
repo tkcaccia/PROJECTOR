@@ -371,7 +371,7 @@ constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000,
 neighbors = min(c(landmarks, nrow(data)/3)) + 1, spatial = NULL, 
 spatial.knn = 10,splitting=50) 
 {
-  if(is.null(spatial){
+  if(is.null(spatial)){
     spatial=data
     spatial_flag=TRUE
   }  
