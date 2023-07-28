@@ -594,8 +594,13 @@ spatial.knn = 10,splitting=50)
     yatta=0
     attr(yatta,"class")="try-error"
     while(!is.null(attr(yatta,"class"))){
+      
     yatta = try(core_cpp(x, xTdata, clbest, Tcycle, FUN, f.par, 
                      Xconstrain_ssa, Xfix_ssa, shake, Xspatial_ssa,Tspatial_ssa,spatial.knn),silent = FALSE)
+      if(attr(yatta,"class")=="try-error"){
+        save(x, xTdata, clbest, Tcycle, FUN, f.par, 
+                     Xconstrain_ssa, Xfix_ssa, shake, Xspatial_ssa,Tspatial_ssa,spatial.knn,file="Chepalle.RData")
+      }
     }
     options(warn=0)
     if (is.list(yatta)) {
