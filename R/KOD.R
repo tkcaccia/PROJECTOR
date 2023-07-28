@@ -368,9 +368,16 @@ function (data, M = 100, Tcycle = 20, FUN_VAR = function(x) {
   ceiling(nrow(x) * 0.75)
 }, bagging = FALSE, FUN = c("PLS-DA", "KNN"), f.par = 5, W = NULL, 
 constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000, 
-neighbors = min(c(landmarks, nrow(data)/3)) + 1, spatial = "profile", 
+neighbors = min(c(landmarks, nrow(data)/3)) + 1, spatial = NULL, 
 spatial.knn = 10,splitting=50) 
 {
+  if(is.null(spatial){
+    spatial=data
+    spatial_flag=TRUE
+  }  
+  else{
+    spatial_flag=FALSE
+  }
   if (sum(is.na(data)) > 0) {
     stop("Missing values are present")
   }
@@ -424,12 +431,10 @@ spatial.knn = 10,splitting=50)
     Tconstrain = constrain[-landpoints]
     Xconstrain = constrain[landpoints]
     vect_proj = matrix(NA, nrow = M, ncol = nrow(Tdata))
-    if (is.matrix(spatial)) {
-      Xspatial = spatial[landpoints, ]
-    }
-    else {
-      Xspatial = Xdata
-    }
+    
+    Xspatial = spatial[landpoints, ,drop=FALSE]
+    Tspatial = spatial[-landpoints, ,drop=FALSE]
+    
   }
   else {
     Xdata = data
@@ -437,12 +442,10 @@ spatial.knn = 10,splitting=50)
     Xfix = fix
     Xconstrain = constrain
     landpoints = 1:nsample
-    if (is.matrix(spatial)) {
-      Xspatial = spatial
-    }
-    else {
-      Xspatial = Xdata
-    }
+    
+    Xspatial = spatial
+    Tspatial = NULL
+
   }
   nva = ncol(Xdata)
   nsa = nrow(Xdata)
@@ -488,7 +491,28 @@ spatial.knn = 10,splitting=50)
     sva = sample(nva, FUN_VAR, FALSE, NULL)
     ssa = c(whT, sample(whF, FUN_SAM, bagging, NULL))
     
-    Xspatial_ssa = Xspatial[ssa, ]
+ ##################################################################################333   Xspatial_ssa = Xspatial[ssa, ]
+    if (LMARK) {
+      xTdata = Tdata[, sva]
+
+      if(spatial_flag){
+        Tspatial_ssa = Tspatial[,sva]
+        Xspatial_ssa = Xspatial[ssa,sva]
+      }
+      else{
+        Tspatial_ssa = Tspatial
+        Xspatial_ssa = Xspatial[ssa,]
+      }
+    }
+    else {
+      xTdata = NULL
+      Xspatial_ssa = Xspatial[ssa,]
+      Tspatial_ssa=NULL
+      if(spatial_flag){
+        Xspatial_ssa = Xspatial[,sva]
+      }
+    }
+
     
     x = Xdata[ssa, sva]
     xva = ncol(x)
@@ -551,12 +575,16 @@ spatial.knn = 10,splitting=50)
       }
     }
     clbest = XW
-    if (LMARK) {
-      xTdata = Tdata[, sva]
-    }
-    else {
-      xTdata = NULL
-    }
+#    if (LMARK) {
+#      xTdata = Tdata[, sva]
+#      Tspatial = Tspatial[,sva]
+#      Xspatial = Xspatial[,sva]
+#      
+#    }
+#    else {
+#      xTdata = NULL
+#      Xspatial = Xspatial[,sva]
+#    }
 
 
  #     xNeighbors = knn_Armadillo(as.matrix(Xspatial_ssa), as.matrix(x), 
@@ -567,7 +595,7 @@ spatial.knn = 10,splitting=50)
     attr(yatta,"class")="try-error"
     while(!is.null(attr(yatta,"class"))){
     yatta = try(core_cpp(x, xTdata, clbest, Tcycle, FUN, f.par, 
-                     Xconstrain_ssa, Xfix_ssa, shake, Xspatial_ssa,spatial.knn),silent = FALSE)
+                     Xconstrain_ssa, Xfix_ssa, shake, Xspatial_ssa,Tspatial_ssa,spatial.knn),silent = FALSE)
     }
     options(warn=0)
     if (is.list(yatta)) {
