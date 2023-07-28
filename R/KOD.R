@@ -857,6 +857,9 @@ core_cpp <- function(x,
   }else{
     proj=2
   }
+  if(is.null(posxyTdata)){
+    posxyTdata=matrix(1,ncol=1,nrow=1)
+  }
   matchFUN=pmatch(FUN[1],c("KNN","PLS-DA","KNNPLS-DA"))
   if(is.na(matchFUN))
     stop("The classifier to be considered must be  \"PLS-DA\" or \"KNN\".")
