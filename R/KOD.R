@@ -842,7 +842,8 @@ core_cpp <- function(x,
                      constrain=NULL, 
                      fix=NULL, 
                      shake=FALSE,
-                     pos=NULL,
+                     posxy=NULL,
+                     posxyTdata=NULL,
                      neighbors=10) {
   
   if (is.null(constrain)) 
@@ -860,10 +861,9 @@ core_cpp <- function(x,
   if(is.na(matchFUN))
     stop("The classifier to be considered must be  \"PLS-DA\" or \"KNN\".")
   
-  out=corecpp(x, xTdata,clbest, Tcycle, matchFUN, fpar, constrain, fix, shake,proj,pos,neighbors)
+  out=corecpp(x, xTdata,clbest, Tcycle, matchFUN, fpar, constrain, fix, shake,proj,posxy, posxyTdata,neighbors)
   return(out)
 }
-
 
 
 
