@@ -16,10 +16,9 @@ KODAMA_UMAP <- matrix(nrow = 100,ncol = 20)
 
 #generate simulated data
 k=1
-i=0
 for (k in k:100){
   print(paste0 ("Repetition number: ", k))
-  for (i in i:20 ){
+  for (i in 0:20 ){
     print(paste("Number of noisy dimensions:", i))
     ma <- vertex(c(1,10), dims = 2, noisy_dimension = i, size_cluster = 50)
     res_MDS=cmdscale(dist(ma))
