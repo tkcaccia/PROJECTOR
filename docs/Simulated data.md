@@ -40,13 +40,13 @@ for (k in k:100){
     sil6 <- round(summary(silhouette(rep(1:4,each=50),dist( res_KODAMA_UMAP)))$si.summary[4], digit=5)
     
 
-    MDS [k,i] <- sil1
-    TSNE [k,i] <- sil2
-    UMAP [k,i] <- sil3
+    MDS [k,i+1] <- sil1
+    TSNE [k,i+1] <- sil2
+    UMAP [k,i+1] <- sil3
     
-    KODAMA_MDS [k,i] <- sil4
-    KODAMA_TSNE [k,i]<- sil5
-    KODAMA_UMAP [k,i]<- sil6
+    KODAMA_MDS [k,i+1] <- sil4
+    KODAMA_TSNE [k,i+1]<- sil5
+    KODAMA_UMAP [k,i+1]<- sil6
   }
 }
 
