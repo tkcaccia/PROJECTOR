@@ -6,6 +6,7 @@ KODAMA, tSNE, UMAP are applied to simulated data set of two dimention with diffe
 #### Required libraries
 ```
 library(ggplot2)
+library(cluster)
 library(gridExtra)
 library(Rmisc)
 library(gmodels)
@@ -87,7 +88,7 @@ for (k in k:100){
     sil2 <- round(summary(silhouette(rep(1:4,each=50),dist(res_tSNE)))$si.summary[4], digit=5)
     sil3 <- round(summary(silhouette(rep(1:4,each=50),dist( res_UMAP)))$si.summary[4], digit=5)
     
-    kk= KODAMA.matrix(ma)
+    kk=KODAMA.matrix(ma,FUN="KNNPLS-DA",spatial.knn = 10)
     res_KODAMA_MDS=KODAMA.visualization(kk,method = "MDS")
     
     custom.settings = Rtsne.defaults
