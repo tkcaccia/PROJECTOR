@@ -1,27 +1,17 @@
 # KODAMA for Spatial Transcriptomics
 
-To show the how KODAMA could deal with noisy datasets compared to other dimensionality reduction widely used methods such as Uniform Manifold Approximation and Projection (UMAP) and t-Distributed Stochastic Neighbour Embedding (t-SNE), the following simulated data will be used.
+We compared the output of KODAMA with other dimensionality reduction methods such as Uniform Manifold Approximation and Projection (UMAP) and t-Distributed Stochastic Neighbour Embedding (t-SNE).
 
 ## Example 1: Simulated data set 
+A simulated dataset is generated distributing the values of two dimensions centered in the vertix of a square. Additional non-informative dimensions (noise) are included. In the following script, we compare the results of different dimensionality reduction algorithms on a simulated data set with 8 noisy dimensions.
 
-KODAMA, tSNE, UMAP are applied to simulated data set of two dimention with different degrees of noisy (from 0 to 20). The following script to compare the effect of different dimentionallity reduction algorithms on a simulated data set of 8 noisy dimensions.
-
-### Tutorial
-#### Required libraries
-```
-library(ggplot2)
-library(gridExtra)
-library(Rmisc)
-library(gmodels)
-```
-
-The data is simulated with vertix function from KODAMA package with 2 dimensions and 8 noisy dimensions and then scaled
+The data is simulated with vertex function from KODAMA package with 2 dimensions and 8 noisy dimensions and then scaled
 
 ```
 ma <- vertex(c(1,10), dims = 2, noisy_dimension = 8, size_cluster = 50)
 ```
 
-3. Apply MDS, tSNE, KODAMA
+We perform the analysis of MDS, t-SNE, and UMAP.
 ```
 res_MDS=cmdscale(dist(ma))
 colnames(res_MDS) <- c("First Dimension", "Second Dimension")
@@ -30,15 +20,15 @@ colnames(res_tSNE) <- c("First Dimension", "Second Dimension")
 res_UMAP = umap(ma)$layout
 colnames(res_UMAP) <- c("First Dimension", "Second Dimension")
 ```
-4. Apply KODAMA
+The KODAMA analysis is performed and the KODAMA's dissimilarity matrix is transformed in a two-dimensional space using MDS, t-SNE, and UMAP. 
 ```
-kk=KODAMA.matrix(ma)
+kk=KODAMA.matrix(ma,FUN="KNNPLS-DA",spatial.knn = 10)
 res_KODAMA_MDS=KODAMA.visualization(kk,method = "MDS")
 res_KODAMA_tSNE=KODAMA.visualization(kk,method = "t-SNE")
 res_KODAMA_UMAP=KODAMA.visualization(kk,method = "UMAP")
 ```
 
-5. Plot the results
+The results are plotted.
 
 ```
 par(mfrow = c(2,3))
@@ -58,7 +48,7 @@ plot(res_KODAMA_UMAP,pch=21,bg=labels,main="KODAMA_UMAP")
   </p>
 </p>
 
-#### Simulated data of different noisy dimensions(1-20) are generated. Then apply different algorithms and calculate the clustering efficiency of each one at different noisy levels using silhouette test.The confidence intervals for each clustering algorithm at different noisy level  are calculated and visualized. [Simulated data](https://github.com/tkcaccia/KODAMA/edit/main/docs/Simulated%20data.md). The clustering quality of KODAM is high compared to othe ther algorithms. 
+We compared now the output Simulated data of different noisy dimensions(1-20) are generated. Then apply different algorithms and calculate the clustering efficiency of each one at different noisy levels using silhouette test.The confidence intervals for each clustering algorithm at different noisy level  are calculated and visualized. [Simulated data](https://github.com/tkcaccia/KODAMA/edit/main/docs/Simulated%20data.md). The clustering quality of KODAM is high compared to othe ther algorithms. 
 
 <p>
   <p align="center">
