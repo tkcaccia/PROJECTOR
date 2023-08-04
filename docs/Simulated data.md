@@ -1,60 +1,6 @@
-## Example 1: Simulated data set 
+## Simulated data sets
 
-KODAMA, tSNE, UMAP are applied to simulated data set of two dimention with different degrees of noisy (from 0 to 20). The following script to compare the effect of different dimentionallity reduction algorithms on a simulated data set of 8 noisy dimensions.
-
-### Tutorial
-#### Required libraries
-```
-library(ggplot2)
-library(cluster)
-library(gridExtra)
-library(Rmisc)
-library(gmodels)
-```
-
-The data is simulated with vertix function from KODAMA package with 2 dimensions and 8 noisy dimensions and then scaled
-
-```
-ma <- vertex(c(1,10), dims = 2, noisy_dimension = 8, size_cluster = 50)
-```
-Apply MDS, tSNE, UMAP on simulated dataset
-```
-res_MDS=cmdscale(dist(ma))
-colnames(res_MDS) <- c("First Dimension", "Second Dimension")
-res_tSNE=Rtsne(ma)$Y
-colnames(res_tSNE) <- c("First Dimension", "Second Dimension")
-res_UMAP = umap(ma)$layout
-colnames(res_UMAP) <- c("First Dimension", "Second Dimension")
-```
-### KODAMA
-```
-kk=KODAMA.matrix(ma)
-res_KODAMA_MDS=KODAMA.visualization(kk,method = "MDS")
-res_KODAMA_tSNE=KODAMA.visualization(kk,method = "t-SNE")
-res_KODAMA_UMAP=KODAMA.visualization(kk,method = "UMAP")
-```
-
-Visulaize the differece between different dimensionality reduction algorithm 
-
-```
-par(mfrow = c(2,3))
-labels <- rep(c("#FF0000","#0000FF","#008000","#FFFF00"),each= 50)
-plot(res_MDS,pch=21,bg=labels,main="MDS")
-plot(res_tSNE,pch=21,bg=labels,main="tSNE")
-plot(res_UMAP,pch=21,bg=labels,main="UMAP")
-plot(res_KODAMA_MDS,pch=21,bg=labels,main="KODAMA_MDS",ylim=range(res_KODAMA_MDS[,1]))
-plot(res_KODAMA_tSNE,pch=21,bg=labels,main="KODAMA_tSNE")
-plot(res_KODAMA_UMAP,pch=21,bg=labels,main="KODAMA_UMAP")
-
-
-```
-<p>
-  <p align="center">
-    <img src="https://github.com/tkcaccia/KODAMA/blob/main/figures/Rplot02.png" alt="hello-light" />
-  </p>
-</p>
-
-#### Simulated data of different noisy dimensions(1-20) are generated. Then apply different algorithms and calculate the clustering efficiency of each one at different noisy levels using silhouette test.
+In this code, simulated data sets with a different number of noisy dimensions ranging from 0 to 20 are generated. For each number of noisy dimensions, 100 different data sets are generated. The results of each method are compared using the Silhouette function.
 
 ```
 noisy_dimension=c(0:20)
@@ -70,41 +16,31 @@ KODAMA_UMAP <- matrix(nrow = 100,ncol = 20)
 
 #generate simulated data
 k=1
+i=0
 for (k in k:100){
-  print(paste0 ("I am analyzing: ", k))
-  for (i in 0:20 ){
-    print(paste("I am anlayzing noisy", i))
-    #par(mar = c(3,3,3,3))
-    #par(mfrow = c(2,3))    
+  print(paste0 ("Repetition number: ", k))
+  for (i in i:20 ){
+    print(paste("Number of noisy dimensions:", i))
     ma <- vertex(c(1,10), dims = 2, noisy_dimension = i, size_cluster = 50)
-    # plot(ma,pch=21,bg=rep(2:5,each=50),main="Data")
     res_MDS=cmdscale(dist(ma))
-    res_tSNE=Rtsne(ma,perplexity = 20)$Y
-    custom.settings = umap.defaults
-    custom.settings$n_neighbors=20
-    res_UMAP = umap(ma, config = custom.settings)$layout
+    res_tSNE=Rtsne(ma)$Y
+    res_UMAP = umap(ma)$layout
     
     sil1 <- round(summary(silhouette(rep(1:4,each=50),dist(res_MDS)))$si.summary[4], digit=5)
     sil2 <- round(summary(silhouette(rep(1:4,each=50),dist(res_tSNE)))$si.summary[4], digit=5)
     sil3 <- round(summary(silhouette(rep(1:4,each=50),dist( res_UMAP)))$si.summary[4], digit=5)
     
+    
     kk=KODAMA.matrix(ma,FUN="KNNPLS-DA",spatial.knn = 10)
     res_KODAMA_MDS=KODAMA.visualization(kk,method = "MDS")
-    
-    custom.settings = Rtsne.defaults
-    custom.settings$perplexity=20
-    res_KODAMA_tSNE=KODAMA.visualization(kk,method = "t-SNE",config = custom.settings)
-    
-    custom.settings = umap.defaults
-    custom.settings$n_neighbors=20
-    res_KODAMA_UMAP=KODAMA.visualization(kk,method = "UMAP",config = custom.settings)
+    res_KODAMA_tSNE=KODAMA.visualization(kk,method = "t-SNE")
+    res_KODAMA_UMAP=KODAMA.visualization(kk,method = "UMAP")
     
     sil4 <- round(summary(silhouette(rep(1:4,each=50),dist(res_KODAMA_MDS)))$si.summary[4], digit=5)
     sil5 <- round(summary(silhouette(rep(1:4,each=50),dist(res_KODAMA_tSNE)))$si.summary[4], digit=5)
     sil6 <- round(summary(silhouette(rep(1:4,each=50),dist( res_KODAMA_UMAP)))$si.summary[4], digit=5)
     
-    mtext(paste0("Noisy",i), side = 3, line = -25, outer = TRUE)
-    
+
     MDS [k,i] <- sil1
     TSNE [k,i] <- sil2
     UMAP [k,i] <- sil3
@@ -114,8 +50,17 @@ for (k in k:100){
     KODAMA_UMAP [k,i]<- sil6
   }
 }
+
 ```
-####  The confidence intervals for each clustering algorithm at different noisy level  are calculated and visualized 
+#### Required libraries
+```
+library(ggplot2)
+library(cluster)
+library(gridExtra)
+library(Rmisc)
+library(gmodels)
+```
+The confidence intervals for each clustering algorithm at different noisy level  are calculated and visualized 
 
 ```
 test <-  list(MDS, TSNE,UMAP,K_MDS,K_TSNE,K_UMAP)
