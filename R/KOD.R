@@ -369,7 +369,7 @@ function (data, M = 100, Tcycle = 20, FUN_VAR = function(x) {
 }, bagging = FALSE, FUN = c("PLS-DA", "KNN"), f.par = 5, W = NULL, 
 constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000, 
 neighbors = min(c(landmarks, nrow(data)/3)) + 1, spatial = NULL, 
-spatial.knn = 10,splitting=50) 
+spatial.knn = 10,splitting=50,clust_contrain=FALSE) 
 {
   if(is.null(spatial)){
     spatial=data
@@ -544,6 +544,9 @@ spatial.knn = 10,splitting=50)
         tab = apply(table(clust, Xconstrain_ssa), 2, 
                     which.max)
         XW = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))
+        if(clust_contrain==TRUE){
+          XW=clust
+        }
       }
     }
     else {
@@ -571,6 +574,9 @@ spatial.knn = 10,splitting=50)
           nnew = length(unique(constrain_temp[ghg]))
           XW[ghg] = as.numeric(as.factor(constrain_temp[ghg])) + 
             length(unw)
+          if(clust_contrain==TRUE){
+            XW=clust
+          }
         }
       }
     }
