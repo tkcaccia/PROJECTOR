@@ -360,7 +360,6 @@ pca = function(x,...){
   res
 }
 
-
 KODAMA.matrix =
 function (data, M = 100, Tcycle = 20, FUN_VAR = function(x) {
   ceiling(ncol(x))
@@ -369,14 +368,13 @@ function (data, M = 100, Tcycle = 20, FUN_VAR = function(x) {
 }, bagging = FALSE, FUN = c("PLS-DA", "KNN"), f.par = 5, W = NULL, 
 constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000, 
 neighbors = min(c(landmarks, nrow(data)/3)) + 1, spatial = NULL, 
-spatial.knn = 10,splitting=50,clust_contrain=FALSE) 
+spatial.knn = 10, splitting = 50, clust_contrain = FALSE) 
 {
-  if(is.null(spatial)){
-    spatial=data
-    spatial_flag=TRUE
-  }  
-  else{
-    spatial_flag=FALSE
+  if (is.null(spatial)) {
+    spatial = data
+    spatial_flag = TRUE
+  }  else {
+    spatial_flag = FALSE
   }
   if (sum(is.na(data)) > 0) {
     stop("Missing values are present")
@@ -402,14 +400,11 @@ spatial.knn = 10,splitting=50,clust_contrain=FALSE)
     }
     nlandmarks = length(landmarks)
   }
-  
-  # If LMARK is TRUE, the landmark approach will be performed
   LMARK = (nsample > nlandmarks)
   if (LMARK) {
     if (length(landmarks) > 1) {
       landpoints = landmarks
-    }
-    else {
+    }    else {
       landpoints = sort(sample(nrow(data), landmarks))
       clust = as.numeric(kmeans(data, landmarks)$cluster)
       landpoints = NULL
@@ -417,8 +412,7 @@ spatial.knn = 10,splitting=50,clust_contrain=FALSE)
         www = which(clust == ii)
         if (length(www) == 1) {
           landpoints = c(landpoints, www)
-        }
-        else {
+        } else {
           landpoints = c(landpoints, sample(www)[1])
         }
       }
@@ -431,21 +425,16 @@ spatial.knn = 10,splitting=50,clust_contrain=FALSE)
     Tconstrain = constrain[-landpoints]
     Xconstrain = constrain[landpoints]
     vect_proj = matrix(NA, nrow = M, ncol = nrow(Tdata))
-    
-    Xspatial = spatial[landpoints, ,drop=FALSE]
-    Tspatial = spatial[-landpoints, ,drop=FALSE]
-    
-  }
-  else {
+    Xspatial = spatial[landpoints, , drop = FALSE]
+    Tspatial = spatial[-landpoints, , drop = FALSE]
+  } else {
     Xdata = data
     Xdata_landpoints = Xdata
     Xfix = fix
     Xconstrain = constrain
     landpoints = 1:nsample
-    
     Xspatial = spatial
     Tspatial = NULL
-
   }
   nva = ncol(Xdata)
   nsa = nrow(Xdata)
@@ -459,7 +448,7 @@ spatial.knn = 10,splitting=50,clust_contrain=FALSE)
             FUN_VAR)
     f.par = FUN_VAR
   }
-    if (f.par > FUN_VAR & FUN[1] == "KNNPLS-DA") {
+  if (f.par > FUN_VAR & FUN[1] == "KNNPLS-DA") {
     message("The number of components selected for PLS-DA is too high and it will be automatically reduced to ", 
             FUN_VAR)
     f.par = FUN_VAR
@@ -472,48 +461,25 @@ spatial.knn = 10,splitting=50,clust_contrain=FALSE)
   pb <- txtProgressBar(min = 1, max = M, style = 1)
   for (k in 1:M) {
     setTxtProgressBar(pb, k)
-  #  if (LMARK) {
-  #    ks = round(nsample/nlandmarks)
-  #    tt = knn_Armadillo(data, data[landpoints, ], k = ks)$nn_index
-  #    landpoints2 = landpoints
-  #    for (ii in 1:landmarks) {
-  #      landpoints2[ii] = tt[ii, sample(ks, 1)]
-  #    }
-  #    Xdata = data[landpoints2, , drop = FALSE]
-  #    if (is.matrix(spatial)) {
-  #      spatial = spatial[landpoints2, ]
-  #    }
-  #  }
-    
-    
-    
-    
     sva = sample(nva, FUN_VAR, FALSE, NULL)
     ssa = c(whT, sample(whF, FUN_SAM, bagging, NULL))
-    
- ##################################################################################333   Xspatial_ssa = Xspatial[ssa, ]
     if (LMARK) {
       xTdata = Tdata[, sva]
-
-      if(spatial_flag){
-        Tspatial_ssa = Tspatial[,sva]
-        Xspatial_ssa = Xspatial[ssa,sva]
-      }
-      else{
+      if (spatial_flag) {
+        Tspatial_ssa = Tspatial[, sva]
+        Xspatial_ssa = Xspatial[ssa, sva]
+      } else {
         Tspatial_ssa = Tspatial
-        Xspatial_ssa = Xspatial[ssa,]
+        Xspatial_ssa = Xspatial[ssa, ]
       }
-    }
-    else {
+    }else {
       xTdata = NULL
-      Xspatial_ssa = Xspatial[ssa,]
-      Tspatial_ssa=NULL
-      if(spatial_flag){
-        Xspatial_ssa = Xspatial[,sva]
+      Xspatial_ssa = Xspatial[ssa, ]
+      Tspatial_ssa = NULL
+      if (spatial_flag) {
+        Xspatial_ssa = Xspatial[, sva]
       }
     }
-
-    
     x = Xdata[ssa, sva]
     xva = ncol(x)
     xsa = nrow(x)
@@ -537,19 +503,17 @@ spatial.knn = 10,splitting=50,clust_contrain=FALSE)
       if (xsa_same_point <= 200 || length(unique(x)) < 
           50) {
         XW = Xconstrain_ssa
-      }
-      else {
-        #Test spatial modify x with Xspatial_ssa
+      } else {
         clust = as.numeric(kmeans(Xspatial_ssa, splitting)$cluster)
         tab = apply(table(clust, Xconstrain_ssa), 2, 
                     which.max)
         XW = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))
-        if(clust_contrain==TRUE){
-          XW=clust
+        if (clust_contrain == TRUE) {
+          XW = clust
+          Xconstrain_ssa = clust
         }
       }
-    }
-    else {
+    } else {
       XW = W[landpoints][ssa]
       if (any(is.na(XW))) {
         if (xsa_same_point <= 200 || length(unique(x)) < 
@@ -560,10 +524,7 @@ spatial.knn = 10,splitting=50,clust_contrain=FALSE)
           nnew = length(unique(Xconstrain_ssa[ghg]))
           XW[ghg] = as.numeric(as.factor(Xconstrain_ssa[ghg])) + 
             length(unw)
-        }
-        else {
-          
-          #Test spatial modify x with Xspatial_ssa
+        } else {
           clust = as.numeric(kmeans(Xspatial_ssa, splitting)$cluster)
           tab = apply(table(clust, Xconstrain_ssa), 2, 
                       which.max)
@@ -574,41 +535,28 @@ spatial.knn = 10,splitting=50,clust_contrain=FALSE)
           nnew = length(unique(constrain_temp[ghg]))
           XW[ghg] = as.numeric(as.factor(constrain_temp[ghg])) + 
             length(unw)
-          if(clust_contrain==TRUE){
-            XW=clust
+          if (clust_contrain == TRUE) {
+            XW = clust
+            Xconstrain_ssa = clust
           }
         }
       }
     }
     clbest = XW
-#    if (LMARK) {
-#      xTdata = Tdata[, sva]
-#      Tspatial = Tspatial[,sva]
-#      Xspatial = Xspatial[,sva]
-#      
-#    }
-#    else {
-#      xTdata = NULL
-#      Xspatial = Xspatial[,sva]
-#    }
-
-
- #     xNeighbors = knn_Armadillo(as.matrix(Xspatial_ssa), as.matrix(x), 
- #                                spatial.knn)$nn_index
-
-    options(warn=-1)
-    yatta=0
-    attr(yatta,"class")="try-error"
-    while(!is.null(attr(yatta,"class"))){
-      
-    yatta = try(core_cpp(x, xTdata, clbest, Tcycle, FUN, f.par, 
-                     Xconstrain_ssa, Xfix_ssa, shake, Xspatial_ssa,Tspatial_ssa,spatial.knn),silent = FALSE)
-      if(!is.null(attr(yatta,"class"))){
-        save(x, xTdata, clbest, Tcycle, FUN, f.par, 
-                     Xconstrain_ssa, Xfix_ssa, shake, Xspatial_ssa,Tspatial_ssa,spatial.knn,file="Chepalle.RData")
+    options(warn = -1)
+    yatta = 0
+    attr(yatta, "class") = "try-error"
+    while (!is.null(attr(yatta, "class"))) {
+      yatta = try(core_cpp(x, xTdata, clbest, Tcycle, FUN, 
+                           f.par, Xconstrain_ssa, Xfix_ssa, shake, Xspatial_ssa, 
+                           Tspatial_ssa, spatial.knn), silent = FALSE)
+      if (!is.null(attr(yatta, "class"))) {
+        save(yatta,x, xTdata, clbest, Tcycle, FUN, f.par, Xconstrain_ssa, 
+             Xfix_ssa, shake, Xspatial_ssa, Tspatial_ssa, 
+             spatial.knn, file = "/Users/stefano/Desktop/Chepalle2.RData")
       }
     }
-    options(warn=0)
+    options(warn = 0)
     if (is.list(yatta)) {
       clbest = as.vector(yatta$clbest)
       accu = yatta$accbest
@@ -672,8 +620,7 @@ spatial.knn = 10,splitting=50,clust_contrain=FALSE)
       knn_Armadillo$nn_index[i_tsne, ] = knn_Armadillo$nn_index[i_tsne, 
                                                                 oo_tsne]
     }
-  }
-  else {
+  } else {
     knn_Armadillo = list()
     knn_Armadillo$nn_index = matrix(ncol = ncol(mam), nrow = nrow(mam))
     for (i_tsne in 1:nrow(data)) {
@@ -693,6 +640,7 @@ spatial.knn = 10,splitting=50,clust_contrain=FALSE)
               data = data))
 }
 
+                              
 KODAMA.visualization=function(kk,method=c("t-SNE","MDS","UMAP"),config=NULL){
   
   mat=c("t-SNE","MDS","UMAP")[pmatch(method,c("t-SNE","MDS","UMAP"))[1]]
