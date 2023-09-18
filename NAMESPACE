@@ -24,14 +24,6 @@ importFrom("doParallel", "registerDoParallel")
 importFrom("foreach", "getDoParRegistered", "getDoParWorkers")
 
   
-
-
-  foreach::getDoParRegistered()
-  foreach::getDoParWorkers()
-
-doParallel::registerDoParallel
-parallel::makeCluster
-
 S3method(print,Rtsne.config)
 S3method(print,MDS.config)
 
