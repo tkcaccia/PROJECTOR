@@ -371,10 +371,6 @@ arma::ivec KNNCV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k) {
 
 arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp,arma::mat POS) {
 
-
-
-  
-  
   // n <-dim(Xtrain)[1]
   int n = Xtrain.n_rows;
   
@@ -558,6 +554,206 @@ arma::mat pred_pls_pos(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nco
     }
     
 
+    sli=sli % Mtest;
+    
+    
+    return sli;
+    
+    
+  }
+   
+
+
+arma::mat pred_pls_pos2(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int ncomp,arma::mat POS_knn,arma::mat PROFILE_knn) {
+
+  // n <-dim(Xtrain)[1]
+  int n = Xtrain.n_rows;
+  
+  // p <-dim(Xtrain)[2]
+  int p = Xtrain.n_cols;
+  
+  // m <- dim(Y)[2]
+  int m = Ytrain.n_cols;
+  
+  // w <-dim(Xtest)[1]
+  int w = Xtest.n_rows;
+  
+  // arma::mat mm=a*b;
+  
+  //X=Xtrain
+  arma::mat X=Xtrain;
+
+  
+
+  
+  // X <- scale(Xtrain,center=TRUE,scale=FALSE)
+  // Xtest <-scale(Xtest,center=mX)
+  arma::mat mX=mean(Xtrain,0);
+  X.each_row()-=mX;
+  Xtest.each_row()-=mX;
+  
+  arma::mat Y=Ytrain;
+  
+  // Y <- scale(Ytrain,center=TRUE,scale=FALSE)
+  arma::mat mY=mean(Ytrain,0);
+  Y.each_row()-=mY;
+  
+  // S <- crossprod(X,Y)
+  arma::mat S=trans(X)*Y;
+  
+  //  RR<-matrix(0,ncol=ncomp,nrow=p)
+  arma::mat RR(p,ncomp);
+  RR.zeros();
+  
+  //  PP<-matrix(0,ncol=ncomp,nrow=p)
+  arma::mat PP(p,ncomp);
+  PP.zeros();
+  
+  //  QQ<-matrix(0,ncol=ncomp,nrow=m)
+  arma::mat QQ(m,ncomp);
+  QQ.zeros();
+  
+  //  TT<-matrix(0,ncol=ncomp,nrow=n)
+  arma::mat TT(n,ncomp);
+  TT.zeros();
+  
+  //  VV<-matrix(0,ncol=ncomp,nrow=p)
+  arma::mat VV(p,ncomp);
+  VV.zeros();
+  
+  //  UU<-matrix(0,ncol=ncomp,nrow=n)
+  arma::mat UU(n,ncomp);
+  UU.zeros();
+  
+  //  B<-matrix(0,ncol=m,nrow=p)
+  arma::cube B(p,m,ncomp);
+  B.zeros();
+  
+  // Ypred <- matrix(0,ncol=m,nrow=n)
+  arma::cube Ypred(w,m,ncomp);
+  Ypred.zeros();  
+  
+  
+  arma::mat qq;
+  arma::mat pp;
+  arma::mat svd_U;
+  arma::vec svd_s;
+  arma::mat svd_V;
+  arma::mat rr;
+  arma::mat tt;
+  arma::mat uu;
+  arma::mat vv;
+
+  
+  
+
+  // for(a in 1:ncomp){
+    for (int a=0; a<ncomp; a++) {
+      //qq<-svd(S)$v[,1]
+      //rr <- S%*%qq    
+
+
+      
+      svd_econ(svd_U,svd_s,svd_V,S,"left");
+      
+      rr=svd_U.col( 0 );
+
+      
+
+      
+      // tt<-scale(X%*%rr,scale=FALSE)
+      tt=X*rr; 
+      arma::mat mtt=mean(tt,0);
+      tt.each_row()-=mtt;
+      //tnorm<-sqrt(sum(tt*tt))
+      double tnorm=sqrt(sum(sum(tt%tt)));
+      
+      //tt<-tt/tnorm
+      tt/=tnorm;
+      
+      //rr<-rr/tnorm
+      rr/=tnorm;
+      
+      // pp <- crossprod(X,tt)
+      pp=trans(X)*tt;
+      
+      // qq <- crossprod(Y,tt)
+      qq=trans(Y)*tt;
+      
+      
+      //uu <- Y%*%qq
+      uu=Y*qq;
+      
+      //vv<-pp
+      vv=pp;
+      
+      if(a>0){
+        //vv<-vv-VV%*%crossprod(VV,pp)
+        vv-=VV*(trans(VV)*pp);
+        
+        //uu<-uu-TT%*%crossprod(TT,uu)
+        uu-=TT*(trans(TT)*uu);
+      }
+      
+      //vv <- vv/sqrt(sum(vv*vv))
+      vv/=sqrt(sum(sum(vv%vv)));
+      
+      //S <- S-vv%*%crossprod(vv,S)
+      S-=vv*(trans(vv)*S);
+      
+      //RR[,a]=rr
+      RR.col(a)=rr;
+      TT.col(a)=tt;
+      PP.col(a)=pp;
+      QQ.col(a)=qq;
+      VV.col(a)=vv;
+      UU.col(a)=uu;
+      B.slice(a)=RR*trans(QQ);
+   
+   
+      Ypred.slice(a)=Xtest*B.slice(a);
+      
+ 
+
+    } 
+    for (int a=0; a<ncomp; a++) {
+      arma::mat temp1=Ypred.slice(a);
+      temp1.each_row()+=mY;
+      Ypred.slice(a)=temp1;
+    }  
+
+
+    arma::mat sli=Ypred.slice(ncomp-1);
+    
+    
+
+    
+    int k=POS_knn.n_cols;
+    double* nn_index = POS_knn.memptr();
+    arma::umat Mtest(w,m);
+    Mtest.zeros();
+    for(int j=0;j<w;j++){
+      
+      // m is the number of column of Ytrain
+      for(int i=0;i<k;i++){
+        arma::umat temp=Ytrain.row(POS_knn(j,i)-1)==1;
+        Mtest.row(j)= temp || Mtest.row(j)==1;
+      }
+    }
+    sli=sli % Mtest;
+    
+    int k=PROFILE_knn.n_cols;
+    double* nn_index = PROFILE_knn.memptr();
+    arma::umat Mtest(w,m);
+    Mtest.zeros();
+    for(int j=0;j<w;j++){
+      
+      // m is the number of column of Ytrain
+      for(int i=0;i<k;i++){
+        arma::umat temp=Ytrain.row(PROFILE_knn(j,i)-1)==1;
+        Mtest.row(j)= temp || Mtest.row(j)==1;
+      }
+    }
     sli=sli % Mtest;
     
     
@@ -843,6 +1039,87 @@ arma::ivec KNNPLSDACV(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma:
       arma::mat POS_knn=res[0];
 
       Ytest.rows(w1)=pred_pls_pos(Xtrain,Ytrain,Xtest,k,POS_knn);
+
+      
+      
+    }else{
+
+      Ytest.rows(w1)=clmatrix.rows(w1);
+      
+
+    }
+  }  
+
+  Ytest.elem( find(Ytest==0) ) -= 999.0;
+  
+ 
+  int mm2=constrain.size();
+  arma::ivec pp(mm2);
+  
+  //min_val is modified to avoid a warning
+  double min_val=0;
+  min_val++;
+  arma::uvec ww;
+  for (int i=0; i<mm2; i++) {
+    ww=i;
+    arma::mat v22=Ytest.rows(ww);
+    arma::uword index;                                                                                                                                                                                                                                                                                                                
+    min_val = v22.max(index);
+    pp(i)=index+1;
+  }
+  return pp;
+}
+
+
+
+
+// [[Rcpp::export]]
+arma::ivec KNNPLSDACV2(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma::mat pos,int knn_profile,int knn_pos) {
+
+  arma::mat clmatrix=transformy(cl);
+  
+  arma::mat Ytest(clmatrix.n_rows,clmatrix.n_cols);
+  
+  int xsa_t = max(constrain);
+  
+  IntegerVector frame = seq_len(xsa_t);
+
+  IntegerVector v=samplewithoutreplace(frame,xsa_t);
+  
+  
+  int mm=constrain.size();
+  arma::ivec fold(mm);
+  for (int i=0; i<mm; i++) 
+    fold[i]=v[constrain(i)-1]%10;
+  
+  
+  
+  
+  for (int i=0; i<10; i++) {
+    arma::uvec w1,w9;
+    arma::ivec temp;
+    arma::mat Xtrain,Xtest,POStrain,POStest;
+    arma::mat Ytrain;
+    
+    w1=find(fold==i);
+    w9=find(fold!=i);
+    temp=unique(cl(w9));
+    if(temp.size()>1){
+      Xtrain=x.rows(w9);
+      Xtest=x.rows(w1);
+      Ytrain=clmatrix.rows(w9);
+
+      
+      POStrain=pos.rows(w9);
+      POStest=pos.rows(w1);
+      List res=knn_Armadillo(POStrain,POStest,knn_pos);
+      arma::mat POS_knn=res[0];
+
+
+      List res=knn_Armadillo(Xtrain,Xtest,knn_profile);
+      arma::mat PROFILE_knn=res[0];
+
+      Ytest.rows(w1)=pred_pls_pos2(Xtrain,Ytrain,Xtest,k,POS_knn,PROFILE_knn);
 
       
       
@@ -1779,7 +2056,8 @@ List corecpp(arma::mat x,
              int proj,
              arma::mat posxy,
              arma::mat posxyTdata,
-             int neighbors) {
+             int profile_neighbors,
+             int pos_neighbors) {
   
   arma::ivec cvpred=clbest;
   arma::ivec cvpredbest;
@@ -1791,7 +2069,10 @@ List corecpp(arma::mat x,
     cvpredbest=PLSDACV(x,clbest,constrain,fpar);    
   }
   if(FUN==3){
-    cvpredbest=KNNPLSDACV(x,clbest,constrain,fpar,posxy,neighbors);    
+    cvpredbest=KNNPLSDACV(x,clbest,constrain,fpar,posxy,pos_neighbors);    
+  }
+  if(FUN==4){
+    cvpredbest=KNNPLSDACV2(x,clbest,constrain,fpar,posxy,profile_neighbors,pos_neighbors);    
   }
 
   double accbest;
@@ -1890,7 +2171,10 @@ List corecpp(arma::mat x,
       cvpred=PLSDACV(x,cl,constrain,fpar);  
     }
     if(FUN==3){
-      cvpred=KNNPLSDACV(x,cl,constrain,fpar,posxy,neighbors);  
+      cvpred=KNNPLSDACV(x,cl,constrain,fpar,posxy,pos_neighbors);  
+    }
+    if(FUN==4){
+      cvpred=KNNPLSDACV2(x,clbest,constrain,fpar,posxy,profile_neighbors,pos_neighbors);    
     }
     double accTOT= accuracy(cl,cvpred);
     if (accTOT > accbest) {
@@ -1939,10 +2223,33 @@ List corecpp(arma::mat x,
     }
     if(FUN==3){
       arma::mat lcm=transformy(clbest);
-      List res=knn_Armadillo(posxy,posxyTdata,neighbors);
+      List res=knn_Armadillo(posxy,posxyTdata,pos_neighbors);
       arma::mat POS_knn=res[0];
       
       projmat=pred_pls_pos(x,lcm,xTdata,fpar,POS_knn);
+      //min_val is modified to avoid a warning
+      double min_val=0;
+      min_val++;
+      arma::uvec ww;
+      for (int i=0; i<mm2; i++) {
+        ww=i;
+        arma::mat v22=projmat.rows(ww);
+        arma::uword index;                                                                                                                                                                                                                                                                                                                
+        min_val = v22.max(index);
+        pp(i)=index+1;
+      }
+    }
+    if(FUN==4){
+      arma::mat lcm=transformy(clbest);
+      List res=knn_Armadillo(posxy,posxyTdata,pos_neighbors);
+      arma::mat POS_knn=res[0];
+
+      
+      arma::mat lcm=transformy(clbest);
+      List res=knn_Armadillo(x,xTdata,profile_neighbors);
+      arma::mat PROFILE_knn=res[0];
+      
+      projmat=pred_pls_pos2(x,lcm,xTdata,fpar,POS_knn,PROFILE_knn);
       //min_val is modified to avoid a warning
       double min_val=0;
       min_val++;
