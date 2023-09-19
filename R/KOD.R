@@ -804,7 +804,8 @@ core_cpp <- function(x,
                      shake=FALSE,
                      posxy=NULL,
                      posxyTdata=NULL,
-                     neighbors=10) {
+                     profile_neighbors=10,
+                     pos_neighbors=10) {
   
   if (is.null(constrain)) 
     constrain = 1:length(clbest)
@@ -820,11 +821,11 @@ core_cpp <- function(x,
   if(is.null(posxyTdata)){
     posxyTdata=matrix(1,ncol=1,nrow=1)
   }
-  matchFUN=pmatch(FUN[1],c("KNN","PLS-DA","KNNPLS-DA"))
+  matchFUN=pmatch(FUN[1],c("KNN","PLS-DA","KNNPLS-DA","KNNPLS-DA2"))
   if(is.na(matchFUN))
     stop("The classifier to be considered must be  \"PLS-DA\" or \"KNN\".")
   
-  out=corecpp(x, xTdata,clbest, Tcycle, matchFUN, fpar, constrain, fix, shake,proj,posxy, posxyTdata,neighbors)
+  out=corecpp(x, xTdata,clbest, Tcycle, matchFUN, fpar, constrain, fix, shake,proj,posxy, posxyTdata,profile_neighbors,pos_neighbors)
   return(out)
 }
 
