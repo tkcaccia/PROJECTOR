@@ -368,7 +368,7 @@ function (data, M = 100, Tcycle = 20, FUN_VAR = function(x) {
 }, bagging = FALSE, FUN = c("PLS-DA", "KNN"), f.par = 5, W = NULL, 
 constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000, 
 neighbors = min(c(landmarks, nrow(data)/3)) + 1, spatial = NULL, 
-spatial.knn = 10, splitting = 50, clust_contrain = FALSE) 
+spatial.knn = 10,profile.knn = 10, splitting = 50, clust_contrain = FALSE) 
 {
   if (is.null(spatial)) {
     spatial = data
@@ -449,6 +449,11 @@ spatial.knn = 10, splitting = 50, clust_contrain = FALSE)
     f.par = FUN_VAR
   }
   if (f.par > FUN_VAR & FUN[1] == "KNNPLS-DA") {
+    message("The number of components selected for PLS-DA is too high and it will be automatically reduced to ", 
+            FUN_VAR)
+    f.par = FUN_VAR
+  } 
+  if (f.par > FUN_VAR & FUN[1] == "KNNPLS-DA2") {
     message("The number of components selected for PLS-DA is too high and it will be automatically reduced to ", 
             FUN_VAR)
     f.par = FUN_VAR
@@ -549,12 +554,8 @@ spatial.knn = 10, splitting = 50, clust_contrain = FALSE)
     while (!is.null(attr(yatta, "class"))) {
       yatta = try(core_cpp(x, xTdata, clbest, Tcycle, FUN, 
                            f.par, Xconstrain_ssa, Xfix_ssa, shake, Xspatial_ssa, 
-                           Tspatial_ssa, spatial.knn), silent = FALSE)
-      if (!is.null(attr(yatta, "class"))) {
-        save(yatta,x, xTdata, clbest, Tcycle, FUN, f.par, Xconstrain_ssa, 
-             Xfix_ssa, shake, Xspatial_ssa, Tspatial_ssa, 
-             spatial.knn, file = "/Users/stefano/Desktop/Chepalle2.RData")
-      }
+                           Tspatial_ssa, profile.knn, spatial.knn), silent = FALSE)
+
     }
     options(warn = 0)
     if (is.list(yatta)) {
