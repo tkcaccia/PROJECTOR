@@ -728,28 +728,28 @@ arma::mat pred_pls_pos2(arma::mat Xtrain,arma::mat Ytrain,arma::mat Xtest,int nc
     
 
     
-    int k=POS_knn.n_cols;
-    double* nn_index = POS_knn.memptr();
+    int knc=POS_knn.n_cols;
+ //   double* nn_index = POS_knn.memptr();                                       This variable is not used 
     arma::umat Mtest(w,m);
     Mtest.zeros();
     for(int j=0;j<w;j++){
       
       // m is the number of column of Ytrain
-      for(int i=0;i<k;i++){
+      for(int i=0;i<knc;i++){
         arma::umat temp=Ytrain.row(POS_knn(j,i)-1)==1;
         Mtest.row(j)= temp || Mtest.row(j)==1;
       }
     }
     sli=sli % Mtest;
     
-    int k=PROFILE_knn.n_cols;
-    double* nn_index = PROFILE_knn.memptr();
-    arma::umat Mtest(w,m);
+    knc=PROFILE_knn.n_cols;
+//    double* nn_index = PROFILE_knn.memptr();                                     This variable is not used 
+//    arma::umat Mtest(w,m);
     Mtest.zeros();
     for(int j=0;j<w;j++){
       
       // m is the number of column of Ytrain
-      for(int i=0;i<k;i++){
+      for(int i=0;i<knc;i++){
         arma::umat temp=Ytrain.row(PROFILE_knn(j,i)-1)==1;
         Mtest.row(j)= temp || Mtest.row(j)==1;
       }
@@ -1112,12 +1112,12 @@ arma::ivec KNNPLSDACV2(arma::mat x,arma::ivec cl,arma::ivec constrain,int k,arma
       
       POStrain=pos.rows(w9);
       POStest=pos.rows(w1);
-      List res=knn_Armadillo(POStrain,POStest,knn_pos);
-      arma::mat POS_knn=res[0];
+      List res1=knn_Armadillo(POStrain,POStest,knn_pos);
+      arma::mat POS_knn=res1[0];
 
 
-      List res=knn_Armadillo(Xtrain,Xtest,knn_profile);
-      arma::mat PROFILE_knn=res[0];
+      List res2=knn_Armadillo(Xtrain,Xtest,knn_profile);
+      arma::mat PROFILE_knn=res2[0];
 
       Ytest.rows(w1)=pred_pls_pos2(Xtrain,Ytrain,Xtest,k,POS_knn,PROFILE_knn);
 
@@ -2241,13 +2241,11 @@ List corecpp(arma::mat x,
     }
     if(FUN==4){
       arma::mat lcm=transformy(clbest);
-      List res=knn_Armadillo(posxy,posxyTdata,pos_neighbors);
-      arma::mat POS_knn=res[0];
+      List res1=knn_Armadillo(posxy,posxyTdata,pos_neighbors);
+      arma::mat POS_knn=res1[0];
 
-      
-      arma::mat lcm=transformy(clbest);
-      List res=knn_Armadillo(x,xTdata,profile_neighbors);
-      arma::mat PROFILE_knn=res[0];
+      List res2=knn_Armadillo(x,xTdata,profile_neighbors);
+      arma::mat PROFILE_knn=res2[0];
       
       projmat=pred_pls_pos2(x,lcm,xTdata,fpar,POS_knn,PROFILE_knn);
       //min_val is modified to avoid a warning
