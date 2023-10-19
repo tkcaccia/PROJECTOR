@@ -2058,9 +2058,7 @@ List corecpp(arma::mat x,
              bool shake,
              int proj,
              arma::mat posxy,
-             arma::mat posxyTdata,
-             int profile_neighbors,
-             int pos_neighbors) {
+             arma::mat posxyTdata) {
   
   arma::ivec cvpred=clbest;
   arma::ivec cvpredbest;
