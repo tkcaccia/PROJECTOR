@@ -182,16 +182,12 @@ multi_analysis =
 
 #-----for numerical data 
 
-continuous.test = function (name,
-                            x,    
-                            y,
-                            digits = 3,
-                            scientific = FALSE, 
-                            range = c("IQR","95%CI"), 
-                            logchange = FALSE,pos=2,method=c("non-parametric","parametric"),total.column=FALSE, ...) 
+
+continuous.test =
+function (name, x, y, digits = 3, scientific = FALSE, range = c("IQR", 
+                                                                "95%CI"), logchange = FALSE, pos = 2, method = c("non-parametric", 
+                                                                                                                 "parametric"), total.column = FALSE, ...) 
 {
-  
-  
   matchFUN = pmatch(method[1], c("non-parametric", "parametric"))
   if (matchFUN != 1 & matchFUN != 2) {
     stop("Method argument should one of \"non-parametric\",\"parametric\"")
@@ -201,20 +197,21 @@ continuous.test = function (name,
   A = x[y == ll[1]]
   B = x[y == ll[2]]
   nn = length(levels(y))
+  nn2 = length(unique(y[!is.na(x)]))
   v = data.frame(matrix(nrow = 1, ncol = nn + 3))
   v[1, 1] = name
-  if (nn == 2) {
+  if (nn == 2 & nn2>1) {
     if (matchFUN == 1) {
       pval = wilcox.test(x ~ y, exact = FALSE, ...)$p.value
     }
     if (matchFUN == 2) {
       pval = t.test(x ~ y, ...)$p.value
     }
-    if (logchange == TRUE){
+    if (logchange == TRUE) {
       fc = -log2(mean(A, na.rm = TRUE)/mean(B, na.rm = TRUE))
     }
   }
-  if (nn > 2) {
+  if (nn > 2 & nn2>1) {
     if (matchFUN == 1) {
       pval = kruskal.test(x ~ y, ...)$p.value
     }
@@ -223,15 +220,19 @@ continuous.test = function (name,
     }
     logchange = FALSE
   }
+
   if (nn > 1) {
     v[1, 2:(1 + nn)] = tapply(x, y, function(x) txtsummary(x, 
                                                            digits = digits, scientific = scientific, range = range))
     v[1, nn + 2] = txtsummary(x, digits = digits, scientific = scientific)
-    v[1, nn + 3] = format(pval, digits = 3, scientific = TRUE)
+    if(nn2==1){
+      v[1, nn + 3] = NA
+    }
+    else{
+      v[1, nn + 3] = format(pval, digits = 3, scientific = TRUE)
+    }
   }
-  else {
-    v[1, nn + 3] = NA
-  }
+
   matchFUN = pmatch(range[1], c("IQR", "95%CI"))
   if (pos == 1) {
     if (matchFUN == 1) {
@@ -265,10 +266,14 @@ continuous.test = function (name,
   return(v)
 }
 
+                              
 #-----for categorical data 
 categorical.test = 
-  function (name, x, y,total.column=FALSE,...) 
+  function (name, x, y,total.column=FALSE,remove="",...) 
   {
+    if(!is.null(remove)){
+      x[x==remove]=NA
+    }
     y = as.factor(y)
     nn = length(levels(y))
     t0 = table(x, y)
