@@ -379,15 +379,21 @@ pca = function(x,...){
 }
 
 KODAMA.matrix =
-function (data, M = 100, Tcycle = 20, FUN_VAR = function(x) {
-  ceiling(ncol(x))
-}, FUN_SAM = function(x) {
-  ceiling(nrow(x) * 0.75)
-}, bagging = FALSE, FUN = c("PLS-DA", "KNN"), f.par = 5, W = NULL, 
+function (data, M = 100, Tcycle = 20, 
+          FUN_VAR = function(x) { ceiling(ncol(x)) },
+          FUN_SAM = function(x) { ceiling(nrow(x) * 0.75)}, 
+          bagging = FALSE, FUN = c("PLS","PK","P2K", "KNN"), 
+          f.par.knn = 5, f.par.pls = 5, f.par.pk= 20, f.par.p2k = 20,
+          W = NULL, 
 constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000, 
 neighbors = min(c(landmarks, nrow(data)/3)) + 1, spatial = NULL, 
 spatial.knn = 10,profile.knn = 10, splitting = 50, clust_contrain = FALSE) 
 {
+  matchFUN = pmatch(FUN[1], c("PLS","PK","P2K", "KNN"))
+  if (is.na(matchFUN)) 
+    stop("The method to be considered must be  \"PLS\", \"PK\", \"P2K\" or \"KNN\".")
+
+  
   if (is.null(spatial)) {
     spatial = data
     spatial_flag = TRUE
@@ -461,21 +467,16 @@ spatial.knn = 10,profile.knn = 10, splitting = 50, clust_contrain = FALSE)
   normalization = matrix(0, ncol = nsa, nrow = nsa)
   FUN_VAR = FUN_VAR(Xdata)
   FUN_SAM = FUN_SAM(Xdata)
-  if (f.par > FUN_VAR & FUN[1] == "PLS-DA") {
-    message("The number of components selected for PLS-DA is too high and it will be automatically reduced to ", 
-            FUN_VAR)
-    f.par = FUN_VAR
+  if (f.par.pls > FUN_VAR & (FUN[1] == "PLS" | FUN[1] == "PK" | FUN[1] == "P2K")) {
+    message("The number of components selected for PLS-DA is too high and it will be automatically reduced to ", FUN_VAR)
+    f.par.pls = FUN_VAR
   }
-  if (f.par > FUN_VAR & FUN[1] == "KNNPLS-DA") {
-    message("The number of components selected for PLS-DA is too high and it will be automatically reduced to ", 
-            FUN_VAR)
-    f.par = FUN_VAR
-  } 
-  if (f.par > FUN_VAR & FUN[1] == "KNNPLS-DA2") {
-    message("The number of components selected for PLS-DA is too high and it will be automatically reduced to ", 
-            FUN_VAR)
-    f.par = FUN_VAR
+  if ((f.par.knn > (FUN_SAM/4) & FUN[1] == "KNN")  | 
+      (f.par.pk > (FUN_SAM/4) & (FUN[1] == "PK" | FUN[1] == "P2K")) | 
+      (f.par.p2k > (FUN_SAM/4) & FUN[1] == "P2K")) {
+    stop("The number of k neighbors selected for KNN is too high.")
   }
+
   vect_acc = matrix(NA, nrow = M, ncol = Tcycle)
   accu = NULL
   whF = which(!Xfix)
@@ -571,7 +572,8 @@ spatial.knn = 10,profile.knn = 10, splitting = 50, clust_contrain = FALSE)
     attr(yatta, "class") = "try-error"
     while (!is.null(attr(yatta, "class"))) {
       yatta = try(core_cpp(x, xTdata, clbest, Tcycle, FUN, 
-                           f.par, Xconstrain_ssa, Xfix_ssa, shake, Xspatial_ssa, 
+                           f.par.knn,f.par.pls,f.par.pk,f.par.p2k,
+                           Xconstrain_ssa, Xfix_ssa, shake, Xspatial_ssa, 
                            Tspatial_ssa, profile.knn, spatial.knn), silent = FALSE)
 
     }
@@ -654,7 +656,7 @@ spatial.knn = 10,profile.knn = 10, splitting = 50, clust_contrain = FALSE)
   }
   knn_Armadillo$neighbors = neighbors
   return(list(dissimilarity = dissimilarity, acc = accu, proximity = ma, 
-              v = vect_acc, res = total_res, f.par = f.par, entropy = H, 
+              v = vect_acc, res = total_res, entropy = H, 
               landpoints = landpoints, knn_Armadillo = knn_Armadillo, 
               data = data))
 }
