@@ -33,5 +33,5 @@ exportPattern(floyd,another,vertex,
               transformy,frequency_matching,
               RQ,Rtsne_neighbors,
               knn_Armadillo,
-              txtsummary,continuous.test,categorical.test,correlation.test,multi_analysis,pca,Rtsne.defaults,MDS.defaults,kabsch)
+              txtsummary,continuous.test,categorical.test,correlation.test,multi_analysis,pca,tsne.defaults,MDS.defaults,kabsch)
 
