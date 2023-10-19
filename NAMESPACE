@@ -19,9 +19,6 @@ importFrom("stats", "aov", "summary.aov", "t.test", "p.adjust", "fisher.test", "
 importFrom("minerva", "mine")
 importFrom("Rtsne", "Rtsne_neighbors")
 importFrom("umap", "umap.knn", "umap","umap.defaults")
-importFrom("parallel", "makeCluster", "stopCluster")
-importFrom("doParallel", "registerDoParallel")
-importFrom("foreach", "getDoParRegistered", "getDoParWorkers")
 
   
 S3method(print,Rtsne.config)
@@ -35,6 +32,6 @@ exportPattern(floyd,another,vertex,
               swissroll,normalization,scaling,
               transformy,frequency_matching,
               RQ,Rtsne_neighbors,
-              knn_Armadillo,KODAMA.matrix.parallel,
+              knn_Armadillo,
               txtsummary,continuous.test,categorical.test,correlation.test,multi_analysis,pca,Rtsne.defaults,MDS.defaults,kabsch)
 
