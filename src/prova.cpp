@@ -2049,7 +2049,10 @@ List corecpp(arma::mat x,
              arma::ivec clbest,
              const int Tcycle,
              int FUN,
-             int fpar,
+             int fparknn, 
+             int fparpls, 
+             int fparpk, 
+             int fparp2k,
              arma::ivec constrain,
              NumericVector fix,
              bool shake,
@@ -2063,16 +2066,17 @@ List corecpp(arma::mat x,
   arma::ivec cvpredbest;
 
   if(FUN==1){
-    cvpredbest=KNNCV(x,clbest,constrain,fpar);
+    cvpredbest=PLSDACV(x,clbest,constrain,fparpls);   
+
   }
   if(FUN==2){
-    cvpredbest=PLSDACV(x,clbest,constrain,fpar);    
+     cvpredbest=KNNPLSDACV(x,clbest,constrain,fparpls,posxy,fparpk);
   }
   if(FUN==3){
-    cvpredbest=KNNPLSDACV(x,clbest,constrain,fpar,posxy,pos_neighbors);    
+    cvpredbest=KNNPLSDACV2(x,clbest,constrain,fparpls,posxy,fparpk,fparp2k); 
   }
   if(FUN==4){
-    cvpredbest=KNNPLSDACV2(x,clbest,constrain,fpar,posxy,profile_neighbors,pos_neighbors);    
+    cvpredbest=KNNCV(x,clbest,constrain,fparknn); 
   }
 
   double accbest;
@@ -2164,17 +2168,18 @@ List corecpp(arma::mat x,
     
     
     
+
     if(FUN==1){
-      cvpred=KNNCV(x,cl,constrain,fpar);
+      cvpred=PLSDACV(x,cl,constrain,fparpls);  
     }
     if(FUN==2){
-      cvpred=PLSDACV(x,cl,constrain,fpar);  
+      cvpred=KNNPLSDACV(x,cl,constrain,fparpls,posxy,fparpk);  
     }
     if(FUN==3){
-      cvpred=KNNPLSDACV(x,cl,constrain,fpar,posxy,pos_neighbors);  
+      cvpred=KNNPLSDACV2(x,clbest,constrain,fparpls,posxy,fparpk,fparp2k);    
     }
     if(FUN==4){
-      cvpred=KNNPLSDACV2(x,clbest,constrain,fpar,posxy,profile_neighbors,pos_neighbors);    
+      cvpred=KNNCV(x,cl,constrain,fparknn);
     }
     double accTOT= accuracy(cl,cvpred);
     if (accTOT > accbest) {
