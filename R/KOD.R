@@ -1,4 +1,4 @@
-Rtsne.defaults <- list(
+tsne.defaults <- list(
   dims = 2,
   perplexity = 30,
   theta = 0.5,
@@ -18,9 +18,9 @@ MDS.defaults <- list(
 )
 class(MDS.defaults) <- "MDS.config"
 
-print.Rtsne.config <- function(x, ...) {
-  if (!is(x, "Rtsne.config")) {
-    umap.error("x is not a Rtsne configuration object")
+print.tsne.config <- function(x, ...) {
+  if (!is(x, "tsne.config")) {
+    umap.error("x is not a tsne configuration object")
   }
   
   # produce a string of form "  z:  " of total length width
