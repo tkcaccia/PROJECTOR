@@ -99,18 +99,26 @@ kabsch <- function(pm, qm) {
 }
 
 
-txtsummary = function (x, digits = 0, scientific = FALSE, range=c("IQR","95%CI")) 
+txtsummary = function (x,f=c("median","mean"), digits = 0, scientific = FALSE, range=c("IQR","95%CI","range","sd")) 
 {
-  matchFUN=pmatch(range[1],c("IQR","95%CI"))
+  matchFUN=pmatch(range[1],c("IQR","95%CI","range","sd"))
   if(is.na(matchFUN))
-    stop("The range to be considered must be \"IQR\" or \"95%CI\".")
+    stop("The range to be considered must be \"IQR\", \"95%CI\", \"range\", or \"sd\".")
   
-  m = median(x, na.rm = TRUE)
+  matchf=pmatch(f[1],c("median","mean"))
+  if(is.na(matchFUN))
+    stop("f to be considered must be \"median\" or \"mean\".")
+  
+  m = FUN(x)
   
   if(matchFUN==1)
     ci = quantile(x, probs = c(0.25, 0.75), na.rm = TRUE)
   if(matchFUN==2)
     ci = quantile(x, probs = c(0.025, 0.975), na.rm = TRUE)
+  if(matchFUN==3)
+    ci = range(x, na.rm = TRUE)
+  if(matchFUN==4)
+    ci = sd(x, na.rm = TRUE)
   if (scientific) {
     m = format(m, digits = digits, scientific = scientific)
     ci = format(ci, digits = digits, scientific = scientific)
@@ -119,7 +127,12 @@ txtsummary = function (x, digits = 0, scientific = FALSE, range=c("IQR","95%CI")
     m = round(m, digits = digits)
     ci = round(ci, digits = digits)
   }
-  txt = paste(m, " [", ci[1], " ", ci[2], "]", sep = "")
+  if(matchFUN==4){
+    txt = paste(m, " [", ci, "]", sep = "")
+  }
+  else{
+    txt = paste(m, " [", ci[1], " ", ci[2], "]", sep = "")
+  }
   txt
 }
 
