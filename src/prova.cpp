@@ -2207,13 +2207,13 @@ List corecpp(arma::mat x,
     arma::mat projmat;
     int mm2=xTdata.n_rows;
     arma::ivec pp(mm2); 
-    if(FUN==1){
-      arma::imat temp70=knn_kodama(x,clbest,xTdata,fpar);
+    if(FUN==4){
+      arma::imat temp70=knn_kodama(x,clbest,xTdata,fparknn);
       pp=temp70.col(fpar-1);
     }
-    if(FUN==2){
+    if(FUN==1){
       arma::mat lcm=transformy(clbest);
-      projmat=pred_pls(x,lcm,xTdata,fpar);
+      projmat=pred_pls(x,lcm,xTdata,fparpls);
       //min_val is modified to avoid a warning
       double min_val=0;
       min_val++;
@@ -2226,12 +2226,12 @@ List corecpp(arma::mat x,
         pp(i)=index+1;
       }
     }
-    if(FUN==3){
+    if(FUN==2){
       arma::mat lcm=transformy(clbest);
-      List res=knn_Armadillo(posxy,posxyTdata,pos_neighbors);
+      List res=knn_Armadillo(posxy,posxyTdata,fparpk);
       arma::mat POS_knn=res[0];
       
-      projmat=pred_pls_pos(x,lcm,xTdata,fpar,POS_knn);
+      projmat=pred_pls_pos(x,lcm,xTdata,fparpls,POS_knn);
       //min_val is modified to avoid a warning
       double min_val=0;
       min_val++;
@@ -2246,13 +2246,13 @@ List corecpp(arma::mat x,
     }
     if(FUN==4){
       arma::mat lcm=transformy(clbest);
-      List res1=knn_Armadillo(posxy,posxyTdata,pos_neighbors);
+      List res1=knn_Armadillo(posxy,posxyTdata,fparp2k);
       arma::mat POS_knn=res1[0];
 
-      List res2=knn_Armadillo(x,xTdata,profile_neighbors);
+      List res2=knn_Armadillo(x,xTdata,fparpk);
       arma::mat PROFILE_knn=res2[0];
       
-      projmat=pred_pls_pos2(x,lcm,xTdata,fpar,POS_knn,PROFILE_knn);
+      projmat=pred_pls_pos2(x,lcm,xTdata,fparpls,POS_knn,PROFILE_knn);
       //min_val is modified to avoid a warning
       double min_val=0;
       min_val++;
