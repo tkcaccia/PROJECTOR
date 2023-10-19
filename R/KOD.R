@@ -876,13 +876,16 @@ pls.double.cv = function(Xdata,
   if(is.factor(Ydata)){
     lev=levels(Ydata)
     
-
+    conf_tot=matrix(0,ncol=length(lev),nrow=length(lev))
+    colnames(conf_tot)=lev
+    rownames(conf_tot)=lev
     for(j in 1:runn){
 
       o=double_pls_cv(Xdata,as.matrix(as.numeric(Ydata)),constrain,1,2,compmax,optim,scal)
       bcomp[j]=o$bcomp
       o$Ypred=factor(lev[o$Ypred],levels=lev)
       o$conf=table(o$Ypred,Ydata)
+      conf_tot=conf_tot+o$conf
       o$acc=(sum(diag(o$conf))*100)/length(Ydata)
       o$Yfit=factor(lev[o$Yfit],levels=lev)
       o$R2X=diag((t(o$T)%*%(o$T))%*%(t(o$P)%*%(o$P)))/sum(scale(Xdata,TRUE,TRUE)^2)
@@ -891,6 +894,13 @@ pls.double.cv = function(Xdata,
       res$results[[j]]=o
       
     }
+    acc_tot=round(100*diag(conf_tot)/(length(Ydata)*runn),digits=1)
+
+    conf_tot=round(100*conf_tot/(length(Ydata)*runn),digits=1)
+
+    res$acc_tot=acc_tot
+    res$conf_tot=conf_tot
+    
     res$Q2Y=Q2Y
     res$R2Y=R2Y
     res$medianR2Y=median(R2Y)
