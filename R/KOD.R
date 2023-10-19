@@ -378,6 +378,14 @@ pca = function(x,...){
   res
 }
 
+
+quality_control = function(FUN){
+  matchFUN = pmatch(FUN[1], c("PLS","PK","P2K", "KNN"))
+  if (is.na(matchFUN)) 
+    stop("The method to be considered must be  \"PLS\", \"PK\", \"P2K\" or \"KNN\".")
+
+}
+                              
 KODAMA.matrix =
 function (data, M = 100, Tcycle = 20, 
           FUN_VAR = function(x) { ceiling(ncol(x)) },
@@ -389,10 +397,7 @@ constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000,
 neighbors = min(c(landmarks, nrow(data)/3)) + 1, spatial = NULL, 
 spatial.knn = 10,profile.knn = 10, splitting = 50, clust_contrain = FALSE) 
 {
-  matchFUN = pmatch(FUN[1], c("PLS","PK","P2K", "KNN"))
-  if (is.na(matchFUN)) 
-    stop("The method to be considered must be  \"PLS\", \"PK\", \"P2K\" or \"KNN\".")
-
+  quality_control(FUN)
   
   if (is.null(spatial)) {
     spatial = data
@@ -817,8 +822,8 @@ core_cpp <- function(x,
                      xTdata=NULL,
                      clbest, 
                      Tcycle=20, 
-                     FUN=c("PLS-DA","KNN"), 
-                     fpar=2, 
+                     FUN=c("PLS","PK","P2K", "KNN"), 
+                     f.par.knn = 5, f.par.pls = 5, f.par.pk= 20, f.par.p2k = 20,
                      constrain=NULL, 
                      fix=NULL, 
                      shake=FALSE,
@@ -826,6 +831,8 @@ core_cpp <- function(x,
                      posxyTdata=NULL,
                      profile_neighbors=10,
                      pos_neighbors=10) {
+  
+  quality_control(FUN)
   
   if (is.null(constrain)) 
     constrain = 1:length(clbest)
@@ -841,11 +848,8 @@ core_cpp <- function(x,
   if(is.null(posxyTdata)){
     posxyTdata=matrix(1,ncol=1,nrow=1)
   }
-  matchFUN=pmatch(FUN[1],c("KNN","PLS-DA","KNNPLS-DA","KNNPLS-DA2"))
-  if(is.na(matchFUN))
-    stop("The classifier to be considered must be  \"PLS-DA\" or \"KNN\".")
-  
-  out=corecpp(x, xTdata,clbest, Tcycle, matchFUN, fpar, constrain, fix, shake,proj,posxy, posxyTdata,profile_neighbors,pos_neighbors)
+
+  out=corecpp(x, xTdata,clbest, Tcycle, matchFUN, f.par.knn , f.par.pls, f.par.pk, f.par.p2k , constrain, fix, shake,proj,posxy, posxyTdata,profile_neighbors,pos_neighbors)
   return(out)
 }
 
