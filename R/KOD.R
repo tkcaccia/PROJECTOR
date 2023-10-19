@@ -395,7 +395,7 @@ function (data, M = 100, Tcycle = 20,
           W = NULL, 
 constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000, 
 neighbors = min(c(landmarks, nrow(data)/3)) + 1, spatial = NULL, 
-spatial.knn = 10,profile.knn = 10, splitting = 50, clust_contrain = FALSE) 
+splitting = 50, clust_contrain = FALSE) 
 {
   quality_control(FUN)
   
@@ -579,7 +579,7 @@ spatial.knn = 10,profile.knn = 10, splitting = 50, clust_contrain = FALSE)
       yatta = try(core_cpp(x, xTdata, clbest, Tcycle, FUN, 
                            f.par.knn,f.par.pls,f.par.pk,f.par.p2k,
                            Xconstrain_ssa, Xfix_ssa, shake, Xspatial_ssa, 
-                           Tspatial_ssa, profile.knn, spatial.knn), silent = FALSE)
+                           Tspatial_ssa), silent = FALSE)
 
     }
     options(warn = 0)
@@ -828,9 +828,7 @@ core_cpp <- function(x,
                      fix=NULL, 
                      shake=FALSE,
                      posxy=NULL,
-                     posxyTdata=NULL,
-                     profile_neighbors=10,
-                     pos_neighbors=10) {
+                     posxyTdata=NULL) {
   
   quality_control(FUN)
   
@@ -849,7 +847,7 @@ core_cpp <- function(x,
     posxyTdata=matrix(1,ncol=1,nrow=1)
   }
 
-  out=corecpp(x, xTdata,clbest, Tcycle, matchFUN, f.par.knn , f.par.pls, f.par.pk, f.par.p2k , constrain, fix, shake,proj,posxy, posxyTdata,profile_neighbors,pos_neighbors)
+  out=corecpp(x, xTdata,clbest, Tcycle, matchFUN, f.par.knn , f.par.pls, f.par.pk, f.par.p2k , constrain, fix, shake,proj,posxy, posxyTdata)
   return(out)
 }
 
