@@ -242,8 +242,8 @@ RcppExport SEXP KODAMA_double_knn_cv(SEXP xSEXP, SEXP yySEXP, SEXP constrainSEXP
   END_RCPP
 }
 // corecpp
-List corecpp(arma::mat x, arma::mat xTdata, arma::ivec clbest, const int Tcycle, int FUN, int fparknn, int fparpls, int fparpk, int fparp2k,arma::ivec constrain, NumericVector fix, bool shake, int proj, arma::mat posxy, arma::mat posxyTdata, int profile_neighbors, int pos_neighbors);
-RcppExport SEXP KODAMA_corecpp(SEXP xSEXP, SEXP xTdataSEXP, SEXP clbestSEXP, SEXP TcycleSEXP, SEXP FUNSEXP, SEXP fparknnSEXP, SEXP fparplsSEXP, SEXP fparpkSEXP, SEXP fparp2kSEXP,SEXP constrainSEXP, SEXP fixSEXP, SEXP shakeSEXP, SEXP projSEXP, SEXP posxySEXP, SEXP posxyTdataSEXP, SEXP profile_neighborsSEXP, SEXP pos_neighborsSEXP) {
+List corecpp(arma::mat x, arma::mat xTdata, arma::ivec clbest, const int Tcycle, int FUN, int fparknn, int fparpls, int fparpk, int fparp2k,arma::ivec constrain, NumericVector fix, bool shake, int proj, arma::mat posxy, arma::mat posxyTdata);
+RcppExport SEXP KODAMA_corecpp(SEXP xSEXP, SEXP xTdataSEXP, SEXP clbestSEXP, SEXP TcycleSEXP, SEXP FUNSEXP, SEXP fparknnSEXP, SEXP fparplsSEXP, SEXP fparpkSEXP, SEXP fparp2kSEXP,SEXP constrainSEXP, SEXP fixSEXP, SEXP shakeSEXP, SEXP projSEXP, SEXP posxySEXP, SEXP posxyTdataSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -262,9 +262,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type proj(projSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type posxy(posxySEXP);
     Rcpp::traits::input_parameter< arma::mat >::type posxyTdata(posxyTdataSEXP);
-    Rcpp::traits::input_parameter< int >::type profile_neighbors(profile_neighborsSEXP);
-    Rcpp::traits::input_parameter< int >::type pos_neighbors(pos_neighborsSEXP);
-    __result = Rcpp::wrap(corecpp(x, xTdata, clbest, Tcycle, FUN, fparknn, fparpls, fparpk, fparp2k, constrain, fix, shake, proj,posxy,posxyTdata, profile_neighbors, pos_neighbors));
+    __result = Rcpp::wrap(corecpp(x, xTdata, clbest, Tcycle, FUN, fparknn, fparpls, fparpk, fparp2k, constrain, fix, shake, proj,posxy,posxyTdata));
     return __result;
 END_RCPP
 }
