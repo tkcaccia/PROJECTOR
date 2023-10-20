@@ -431,6 +431,7 @@ quality_control = function(data_row,data_col,spatial_row,landmarks=NULL,FUN,data
     }
   }  else{
     nlandmarks=data_row
+    landpoints=NULL
   }
   SEL_VAR = FUN_VAR(data_col)
   SEL_SAM = FUN_SAM(nlandmarks)
