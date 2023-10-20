@@ -547,19 +547,10 @@ function (data,                       # Dataset
 
 
     
- #   if (LMARK) {
-      xTdata = Tdata[, sva]
-  #    if (spatial_flag) {
-        Tspatial_ssa = Tspatial
-        Xspatial_ssa = Xspatial[ssa, ]
-   #   } 
- #   }else {
- #     xTdata = NULL
- #     if (spatial_flag) {
- #       Xspatial_ssa = Xspatial[ssa, ]
- #       Tspatial_ssa = NULL
- #     }
- #   }
+    xTdata = Tdata[, sva]
+
+    Tspatial_ssa = Tspatial
+    Xspatial_ssa = Xspatial[ssa, ]
     x = Xdata[ssa, sva]
     xva = ncol(x)
     xsa = nrow(x)
@@ -588,7 +579,7 @@ function (data,                       # Dataset
          Xconstrain_ssa = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))  
       }
       
-      clust = as.numeric(kmeans(Xspatial_ssa, splitting)$cluster)
+      clust = as.numeric(kmeans(x, splitting)$cluster)
       tab = apply(table(clust, Xconstrain_ssa), 2, which.max)
       XW = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))
     }
@@ -608,13 +599,13 @@ function (data,                       # Dataset
     options(warn = -1)
     yatta = 0
     attr(yatta, "class") = "try-error"
-    #while (!is.null(attr(yatta, "class"))) {
+    while (!is.null(attr(yatta, "class"))) {
       yatta = try(core_cpp(x, xTdata, clbest, Tcycle, FUN, 
                            f.par.knn,f.par.pls,f.par.pk,f.par.p2k,
                            Xconstrain_ssa, Xfix_ssa, shake, Xspatial_ssa, 
                            Tspatial_ssa), silent = FALSE)
 
-    #}
+    }
     options(warn = 0)
     if (is.list(yatta)) {
       clbest = as.vector(yatta$clbest)
@@ -629,11 +620,8 @@ function (data,                       # Dataset
       }
       uni = unique(clbest)
       nun = length(uni)
-      for (ii in 1:nun) ma[ssa[clbest == uni[ii]], ssa[clbest == 
-                                                         uni[ii]]] = ma[ssa[clbest == uni[ii]], ssa[clbest == 
-                                                                                                      uni[ii]]] + 1
-      normalization[ssa, ssa] = normalization[ssa, ssa] + 
-        1
+      for (ii in 1:nun) ma[ssa[clbest == uni[ii]], ssa[clbest ==  uni[ii]]] = ma[ssa[clbest == uni[ii]], ssa[clbest == uni[ii]]] + 1
+      normalization[ssa, ssa] = normalization[ssa, ssa] + 1
       res[k, ssa] = clbest
     }
   }
@@ -668,16 +656,12 @@ function (data,                       # Dataset
     knn_Armadillo$nn_index = knn_Armadillo$nn_index[, -1]
     for (i_tsne in 1:nrow(data)) {
       for (j_tsne in 1:neighbors) {
-        kod_tsne = mean(total_res[, i_tsne] == total_res[, 
-                                                         knn_Armadillo$nn_index[i_tsne, j_tsne]], na.rm = TRUE)
-        knn_Armadillo$distances[i_tsne, j_tsne] = knn_Armadillo$distances[i_tsne, 
-                                                                          j_tsne]/kod_tsne
+        kod_tsne = mean(total_res[, i_tsne] == total_res[, knn_Armadillo$nn_index[i_tsne, j_tsne]], na.rm = TRUE)
+        knn_Armadillo$distances[i_tsne, j_tsne] = knn_Armadillo$distances[i_tsne,  j_tsne]/kod_tsne
       }
       oo_tsne = order(knn_Armadillo$distance[i_tsne, ])
-      knn_Armadillo$distances[i_tsne, ] = knn_Armadillo$distances[i_tsne, 
-                                                                  oo_tsne]
-      knn_Armadillo$nn_index[i_tsne, ] = knn_Armadillo$nn_index[i_tsne, 
-                                                                oo_tsne]
+      knn_Armadillo$distances[i_tsne, ] = knn_Armadillo$distances[i_tsne, oo_tsne]
+      knn_Armadillo$nn_index[i_tsne, ] = knn_Armadillo$nn_index[i_tsne, oo_tsne]
     }
   } else {
     knn_Armadillo = list()
@@ -687,8 +671,7 @@ function (data,                       # Dataset
       mam[i_tsne, ] = mam[i_tsne, oo_tsne]
       knn_Armadillo$nn_index[i_tsne, ] = oo_tsne
     }
-    knn_Armadillo$nn_index = knn_Armadillo$nn_index[, -1][, 
-                                                          1:neighbors]
+    knn_Armadillo$nn_index = knn_Armadillo$nn_index[, -1][,1:neighbors]
     knn_Armadillo$distances = mam[, -1][, 1:neighbors]
     total_res = res
   }
