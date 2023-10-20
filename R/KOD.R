@@ -457,9 +457,9 @@ function (data,                       # Dataset
           bagging = FALSE, FUN = c("PLS","PKP","PKS","P2K", "KNN"), 
           f.par.knn = 5, f.par.pls = 5, f.par.pk= 20, f.par.p2k = 20,
           W = NULL, 
-constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000, 
-neighbors = min(c(landmarks, nrow(data)/3)) + 1, 
-splitting = 50, clust_contrain = FALSE) 
+          constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000, 
+          neighbors = min(c(landmarks, nrow(data)/3)) + 1, 
+          splitting = 50, spatial.resolution = 0.3 ,clust_contrain = FALSE) 
 {
   if (sum(is.na(data)) > 0) {
     stop("Missing values are present")
@@ -468,6 +468,8 @@ splitting = 50, clust_contrain = FALSE)
   nsample = nrow(data)
   nvariable = ncol(data)
   nsample_spatial= nrow(spatial)
+  nspatialclusters=round(nsample*spatial.resolution)
+  
   if (is.null(spatial)) {
     spatial = data
     spatial_flag = TRUE
@@ -561,7 +563,6 @@ splitting = 50, clust_contrain = FALSE)
     xva = ncol(x)
     xsa = nrow(x)
     Xconstrain_ssa = as.numeric(as.factor(Xconstrain[ssa]))
-    Xconstrain_ssa_previous = Xconstrain[ssa]
     Xfix_ssa = Xfix[ssa]
     del_n = rep(NA, nrow(x))
     for (ik in 1:(nrow(x) - 1)) {
@@ -576,48 +577,32 @@ splitting = 50, clust_contrain = FALSE)
     if (is.na(del_n[nrow(x)])) 
       del_n[nrow(x)] = nrow(x)
     xsa_same_point = length(unique(del_n))
-    if (is.null(W)) {
+    
       if (xsa_same_point <= 200 || length(unique(x)) < 
           50) {
         XW = Xconstrain_ssa
       } else {
+        if (spatial_flag) {
+           spatialclusters=as.numeric(kmeans(Xspatial_ssa, nspatialclusters)$cluster)
+           tab = apply(table(spatialclusters, Xconstrain_ssa), 2,which.max)
+           Xconstrain_ssa = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))  
+        }
+        
         clust = as.numeric(kmeans(Xspatial_ssa, splitting)$cluster)
-        tab = apply(table(clust, Xconstrain_ssa), 2, 
-                    which.max)
+        tab = apply(table(clust, Xconstrain_ssa), 2, which.max)
         XW = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))
-        if (clust_contrain == TRUE) {
-          XW = clust
-          Xconstrain_ssa = clust
-        }
       }
-    } else {
-      XW = W[landpoints][ssa]
-      if (any(is.na(XW))) {
-        if (xsa_same_point <= 200 || length(unique(x)) < 
-            50) {
-          unw = unique(XW)
-          unw = unw[-which(is.na(unw))]
-          ghg = is.na(XW)
-          nnew = length(unique(Xconstrain_ssa[ghg]))
-          XW[ghg] = as.numeric(as.factor(Xconstrain_ssa[ghg])) + 
-            length(unw)
-        } else {
-          clust = as.numeric(kmeans(Xspatial_ssa, splitting)$cluster)
-          tab = apply(table(clust, Xconstrain_ssa), 2, 
-                      which.max)
-          constrain_temp = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))
-          unw = unique(XW)
-          unw = unw[-which(is.na(unw))]
-          ghg = is.na(XW)
-          nnew = length(unique(constrain_temp[ghg]))
-          XW[ghg] = as.numeric(as.factor(constrain_temp[ghg])) + 
-            length(unw)
-          if (clust_contrain == TRUE) {
-            XW = clust
-            Xconstrain_ssa = clust
-          }
-        }
+
+      if(!is.null(W)){
+        SV_startingvector = W[landpoints][ssa]
+        unw = unique(SV_startingvector)
+        unw = unw[-which(is.na(unw))]
+        ghg = is.na(SV_startingvector)
+        SV_startingvector[ghg] = as.numeric(as.factor(SV_startingvector[ghg])) + length(unw)
+        tab = apply(table(SV_startingvector,Xconstrain_ssa), 2,  which.max)
+        XW = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))
       }
+   
     }
     clbest = XW
     options(warn = -1)
@@ -864,7 +849,7 @@ mcplot = function (model){
 }
 
 
-
+                              
 
 core_cpp <- function(x, 
                      xTdata=NULL,
@@ -887,6 +872,9 @@ core_cpp <- function(x,
                      f.par.pls = f.par.pls, 
                      f.par.pk = f.par.pk, 
                      f.par.p2k = f.par.p2k)
+  
+  matchFUN=QC$matchFUN
+  f.par.pls=QC$f.par.pls
   
   if (is.null(constrain)) 
     constrain = 1:length(clbest)
