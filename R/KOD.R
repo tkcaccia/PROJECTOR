@@ -706,7 +706,7 @@ KODAMA.visualization=function(kk,method=c("t-SNE","MDS","UMAP"),config=NULL){
 
   if(mat=="t-SNE"){ 
     if(is.null(config)){
-      config = Rtsne.defaults
+      config = tsne.defaults
     }
     if(config$perplexity>(floor(nrow(kk$data)/3)-1)){
       stop("Perplexity is too large for the number of samples")
