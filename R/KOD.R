@@ -518,6 +518,7 @@ function (data,                       # Dataset
     Tspatial = spatial[-landpoints, , drop = FALSE]
   } else {
     Xdata = data
+    Tdata = NULL
     Xdata_landpoints = Xdata
     Xfix = fix
     Xconstrain = constrain
@@ -543,19 +544,22 @@ function (data,                       # Dataset
     setTxtProgressBar(pb, k)
     sva = sample(nva, SEL_VAR, FALSE, NULL)
     ssa = c(whT, sample(whF, SEL_SAM, bagging, NULL))
-    if (LMARK) {
+
+
+    
+ #   if (LMARK) {
       xTdata = Tdata[, sva]
-      if (spatial_flag) {
+  #    if (spatial_flag) {
         Tspatial_ssa = Tspatial
         Xspatial_ssa = Xspatial[ssa, ]
-      } 
-    }else {
-      xTdata = NULL
-      if (spatial_flag) {
-        Xspatial_ssa = Xspatial[ssa, ]
-        Tspatial_ssa = NULL
-      }
-    }
+   #   } 
+ #   }else {
+ #     xTdata = NULL
+ #     if (spatial_flag) {
+ #       Xspatial_ssa = Xspatial[ssa, ]
+ #       Tspatial_ssa = NULL
+ #     }
+ #   }
     x = Xdata[ssa, sva]
     xva = ncol(x)
     xsa = nrow(x)
