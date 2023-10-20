@@ -405,6 +405,7 @@ quality_control = function(data_row,data_col,spatial_row,landmarks=NULL,FUN,data
         stop("The number of landmarks exceed the number of entries")
       }
       nlandmarks = length(landmarks)
+      landpoints=NULL
     } else{
       
       if (data_row > nlandmarks) {
