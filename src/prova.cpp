@@ -2208,9 +2208,9 @@ List corecpp(arma::mat x,
     arma::mat projmat;
     int mm2=xTdata.n_rows;
     arma::ivec pp(mm2); 
-    if(FUN==4){
+    if(FUN==5){
       arma::imat temp70=knn_kodama(x,clbest,xTdata,fparknn);
-      pp=temp70.col(fpar-1);
+      pp=temp70.col(fparknn-1);
     }
     if(FUN==1){
       arma::mat lcm=transformy(clbest);
@@ -2228,6 +2228,24 @@ List corecpp(arma::mat x,
       }
     }
     if(FUN==2){
+      arma::mat lcm=transformy(clbest);
+      List res=knn_Armadillo(x,xTdata,fparpk);
+      arma::mat POS_knn=res[0];
+      
+      projmat=pred_pls_pos(x,lcm,xTdata,fparpls,POS_knn);
+      //min_val is modified to avoid a warning
+      double min_val=0;
+      min_val++;
+      arma::uvec ww;
+      for (int i=0; i<mm2; i++) {
+        ww=i;
+        arma::mat v22=projmat.rows(ww);
+        arma::uword index;                                                                                                                                                                                                                                                                                                                
+        min_val = v22.max(index);
+        pp(i)=index+1;
+      }
+    }
+    if(FUN==3){
       arma::mat lcm=transformy(clbest);
       List res=knn_Armadillo(posxy,posxyTdata,fparpk);
       arma::mat POS_knn=res[0];
