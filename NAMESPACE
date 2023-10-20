@@ -31,7 +31,7 @@ exportPattern(floyd,another,vertex,
               pls.kodama,dinisurface,helicoid,spirals,
               swissroll,normalization,scaling,
               transformy,frequency_matching,
-              RQ,Rtsne_neighbors,
+              RQ,
               knn_Armadillo,
               txtsummary,continuous.test,categorical.test,correlation.test,multi_analysis,pca,tsne.defaults,MDS.defaults,kabsch)
 
