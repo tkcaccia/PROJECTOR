@@ -889,6 +889,9 @@ core_cpp <- function(x,
   if(is.null(posxyTdata)){
     posxyTdata=matrix(1,ncol=1,nrow=1)
   }
+  if(is.null(posxy)){
+    posxy=matrix(1,ncol=1,nrow=1)
+  }
 
   out=corecpp(x, xTdata,clbest, Tcycle, matchFUN, f.par.knn , f.par.pls, f.par.pk, f.par.p2k , constrain, fix, shake,proj,posxy, posxyTdata)
   return(out)
