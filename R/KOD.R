@@ -578,32 +578,31 @@ function (data,                       # Dataset
       del_n[nrow(x)] = nrow(x)
     xsa_same_point = length(unique(del_n))
     
-      if (xsa_same_point <= 200 || length(unique(x)) < 
-          50) {
-        XW = Xconstrain_ssa
-      } else {
-        if (spatial_flag) {
-           spatialclusters=as.numeric(kmeans(Xspatial_ssa, nspatialclusters)$cluster)
-           tab = apply(table(spatialclusters, Xconstrain_ssa), 2,which.max)
-           Xconstrain_ssa = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))  
-        }
-        
-        clust = as.numeric(kmeans(Xspatial_ssa, splitting)$cluster)
-        tab = apply(table(clust, Xconstrain_ssa), 2, which.max)
-        XW = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))
+    if (xsa_same_point <= 200 || length(unique(x)) < 50) {
+      XW = Xconstrain_ssa
+    } else {
+      if (spatial_flag) {
+         spatialclusters=as.numeric(kmeans(Xspatial_ssa, nspatialclusters)$cluster)
+         tab = apply(table(spatialclusters, Xconstrain_ssa), 2,which.max)
+         Xconstrain_ssa = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))  
       }
-
-      if(!is.null(W)){
-        SV_startingvector = W[landpoints][ssa]
-        unw = unique(SV_startingvector)
-        unw = unw[-which(is.na(unw))]
-        ghg = is.na(SV_startingvector)
-        SV_startingvector[ghg] = as.numeric(as.factor(SV_startingvector[ghg])) + length(unw)
-        tab = apply(table(SV_startingvector,Xconstrain_ssa), 2,  which.max)
-        XW = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))
-      }
-   
+      
+      clust = as.numeric(kmeans(Xspatial_ssa, splitting)$cluster)
+      tab = apply(table(clust, Xconstrain_ssa), 2, which.max)
+      XW = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))
     }
+
+    if(!is.null(W)){
+      SV_startingvector = W[landpoints][ssa]
+      unw = unique(SV_startingvector)
+      unw = unw[-which(is.na(unw))]
+      ghg = is.na(SV_startingvector)
+      SV_startingvector[ghg] = as.numeric(as.factor(SV_startingvector[ghg])) + length(unw)
+      tab = apply(table(SV_startingvector,Xconstrain_ssa), 2,  which.max)
+      XW = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))
+    }
+   
+    
     clbest = XW
     options(warn = -1)
     yatta = 0
