@@ -473,9 +473,9 @@ function (data,                       # Dataset
   nspatialclusters=round(nsample*spatial.resolution)
   
   if (is.null(spatial)) {
-    spatial_flag = TRUE
-  }  else {
     spatial_flag = FALSE
+  }  else {
+    spatial_flag = TRUE
   }
   if (is.null(fix)) 
     fix = rep(FALSE, nsample)
@@ -546,19 +546,13 @@ function (data,                       # Dataset
     if (LMARK) {
       xTdata = Tdata[, sva]
       if (spatial_flag) {
-        Tspatial_ssa = Tspatial[, sva]
-        Xspatial_ssa = Xspatial[ssa, sva]
-      } else {
         Tspatial_ssa = Tspatial
         Xspatial_ssa = Xspatial[ssa, ]
-      }
+      } 
     }else {
       xTdata = NULL
       Xspatial_ssa = Xspatial[ssa, ]
       Tspatial_ssa = NULL
-      if (spatial_flag) {
-        Xspatial_ssa = Xspatial[, sva]
-      }
     }
     x = Xdata[ssa, sva]
     xva = ncol(x)
