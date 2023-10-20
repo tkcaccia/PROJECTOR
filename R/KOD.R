@@ -551,8 +551,10 @@ function (data,                       # Dataset
       } 
     }else {
       xTdata = NULL
-      Xspatial_ssa = Xspatial[ssa, ]
-      Tspatial_ssa = NULL
+      if (spatial_flag) {
+        Xspatial_ssa = Xspatial[ssa, ]
+        Tspatial_ssa = NULL
+      }
     }
     x = Xdata[ssa, sva]
     xva = ncol(x)
