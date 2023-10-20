@@ -2068,12 +2068,15 @@ List corecpp(arma::mat x,
 
   }
   if(FUN==2){
-     cvpredbest=KNNPLSDACV(x,clbest,constrain,fparpls,posxy,fparpk);
+     cvpredbest=KNNPLSDACV(x,clbest,constrain,fparpls,x,fparpk);
   }
   if(FUN==3){
-    cvpredbest=KNNPLSDACV2(x,clbest,constrain,fparpls,posxy,fparpk,fparp2k); 
+     cvpredbest=KNNPLSDACV(x,clbest,constrain,fparpls,posxy,fparpk);
   }
   if(FUN==4){
+    cvpredbest=KNNPLSDACV2(x,clbest,constrain,fparpls,posxy,fparpk,fparp2k); 
+  }
+  if(FUN==5){
     cvpredbest=KNNCV(x,clbest,constrain,fparknn); 
   }
 
