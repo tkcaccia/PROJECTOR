@@ -2177,9 +2177,12 @@ List corecpp(arma::mat x,
       cvpred=KNNPLSDACV(x,cl,constrain,fparpls,posxy,fparpk);  
     }
     if(FUN==3){
-      cvpred=KNNPLSDACV2(x,clbest,constrain,fparpls,posxy,fparpk,fparp2k);    
+      cvpred=KNNPLSDACV(x,cl,constrain,fparpls,posxy,fparpk);  
     }
     if(FUN==4){
+      cvpred=KNNPLSDACV2(x,clbest,constrain,fparpls,posxy,fparpk,fparp2k);    
+    }
+    if(FUN==5){
       cvpred=KNNCV(x,cl,constrain,fparknn);
     }
     double accTOT= accuracy(cl,cvpred);
@@ -2208,10 +2211,7 @@ List corecpp(arma::mat x,
     arma::mat projmat;
     int mm2=xTdata.n_rows;
     arma::ivec pp(mm2); 
-    if(FUN==5){
-      arma::imat temp70=knn_kodama(x,clbest,xTdata,fparknn);
-      pp=temp70.col(fparknn-1);
-    }
+
     if(FUN==1){
       arma::mat lcm=transformy(clbest);
       projmat=pred_pls(x,lcm,xTdata,fparpls);
@@ -2283,6 +2283,10 @@ List corecpp(arma::mat x,
         min_val = v22.max(index);
         pp(i)=index+1;
       }
+    }
+    if(FUN==5){
+      arma::imat temp70=knn_kodama(x,clbest,xTdata,fparknn);
+      pp=temp70.col(fparknn-1);
     }
     return List::create(Named("clbest") = clbest,
                         Named("accbest") = accbest,
