@@ -607,13 +607,13 @@ function (data,                       # Dataset
     options(warn = -1)
     yatta = 0
     attr(yatta, "class") = "try-error"
-    while (!is.null(attr(yatta, "class"))) {
+    #while (!is.null(attr(yatta, "class"))) {
       yatta = try(core_cpp(x, xTdata, clbest, Tcycle, FUN, 
                            f.par.knn,f.par.pls,f.par.pk,f.par.p2k,
                            Xconstrain_ssa, Xfix_ssa, shake, Xspatial_ssa, 
                            Tspatial_ssa), silent = FALSE)
 
-    }
+    #}
     options(warn = 0)
     if (is.list(yatta)) {
       clbest = as.vector(yatta$clbest)
