@@ -471,7 +471,6 @@ function (data,                       # Dataset
   nspatialclusters=round(nsample*spatial.resolution)
   
   if (is.null(spatial)) {
-    spatial = data
     spatial_flag = TRUE
   }  else {
     spatial_flag = FALSE
@@ -862,7 +861,7 @@ core_cpp <- function(x,
                      posxy=NULL,
                      posxyTdata=NULL) {
 
-  
+
     QC=quality_control(data_row = nrow(x),
                      data_col = ncol(x),
                      spatial_row = nrow(posxy),
