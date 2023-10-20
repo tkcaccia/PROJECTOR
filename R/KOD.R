@@ -11,7 +11,7 @@ tsne.defaults <- list(
   exaggeration_factor = 12,
   num_threads = 1
 )
-class(Rtsne.defaults) <- "Rtsne.config"
+class(tsne.defaults) <- "tsne.config"
 
 MDS.defaults <- list(
   dims = 2
@@ -29,7 +29,7 @@ print.tsne.config <- function(x, ...) {
     paste(c(rep(" ", padleft), z, ": "), collapse="")
   }
   
-  message("Rtsne configuration parameters")
+  message("t-SNE configuration parameters")
   primitives <- c("numeric", "integer", "character", "logical")
   vapply(names(x), function(z) {
     zval <- x[[z]]
