@@ -183,88 +183,47 @@ multi_analysis =
 #-----for numerical data 
 
 
-continuous.test =
-function (name, x, y, digits = 3, scientific = FALSE, range = c("IQR", 
-                                                                "95%CI"), logchange = FALSE, pos = 2, method = c("non-parametric", 
-                                                                                                                 "parametric"), total.column = FALSE, ...) 
+
+txtsummary =
+function (x, f = c("median", "mean"), digits = 0, scientific = FALSE, 
+          range = c("IQR", "95%CI", "range", "sd")) 
 {
-  matchFUN = pmatch(method[1], c("non-parametric", "parametric"))
-  if (matchFUN != 1 & matchFUN != 2) {
-    stop("Method argument should one of \"non-parametric\",\"parametric\"")
-  }
-  y = as.factor(y)
-  ll = levels(y)
-  A = x[y == ll[1]]
-  B = x[y == ll[2]]
-  nn = length(levels(y))
-  nn2 = length(unique(y[!is.na(x)]))
-  v = data.frame(matrix(nrow = 1, ncol = nn + 3))
-  v[1, 1] = name
-  if (nn == 2 & nn2>1) {
-    if (matchFUN == 1) {
-      pval = wilcox.test(x ~ y, exact = FALSE, ...)$p.value
-    }
-    if (matchFUN == 2) {
-      pval = t.test(x ~ y, ...)$p.value
-    }
-    if (logchange == TRUE) {
-      fc = -log2(mean(A, na.rm = TRUE)/mean(B, na.rm = TRUE))
-    }
-  }
-  if (nn > 2 & nn2>1) {
-    if (matchFUN == 1) {
-      pval = kruskal.test(x ~ y, ...)$p.value
-    }
-    if (matchFUN == 2) {
-      pval = summary.aov(aov(x ~ y, ...))[[1]]$`Pr(>F)`[1]
-    }
-    logchange = FALSE
-  }
+  matchFUN = pmatch(range[1], c("IQR", "95%CI", "range", "sd"))
+  if (is.na(matchFUN)) 
+    stop("The range to be considered must be \"IQR\", \"95%CI\", \"range\", or \"sd\".")
+  matchf = pmatch(f[1], c("median", "mean"))
+  if (is.na(matchFUN)) 
+    stop("f to be considered must be \"median\" or \"mean\".")
+  if (matchf == 1) 
+    m = median(x,  na.rm = TRUE)
+  if (matchf == 2) 
+    m = mean(x, na.rm = TRUE)
 
-  if (nn > 1) {
-    v[1, 2:(1 + nn)] = tapply(x, y, function(x) txtsummary(x, 
-                                                           digits = digits, scientific = scientific, range = range))
-    v[1, nn + 2] = txtsummary(x, digits = digits, scientific = scientific)
-    if(nn2==1){
-      v[1, nn + 3] = NA
-    }
-    else{
-      v[1, nn + 3] = format(pval, digits = 3, scientific = TRUE)
-    }
-  }
-
-  matchFUN = pmatch(range[1], c("IQR", "95%CI"))
-  if (pos == 1) {
-    if (matchFUN == 1) {
-      names(v) = c("Feature", paste(levels(y), ", median [IQR]", 
-                                    sep = ""), "Total, median [IQR]", "p-value")
-    }
-    if (matchFUN == 2) {
-      names(v) = c("Feature", paste(levels(y), ", median [95%CI]", 
-                                    sep = ""), "Total, median [95%CI]", "p-value")
-    }
+  if (matchFUN == 1) 
+    ci = quantile(x, probs = c(0.25, 0.75), na.rm = TRUE)
+  if (matchFUN == 2) 
+    ci = quantile(x, probs = c(0.025, 0.975), na.rm = TRUE)
+  if (matchFUN == 3) 
+    ci = range(x, na.rm = TRUE)
+  if (matchFUN == 4) 
+    ci = sd(x, na.rm = TRUE)
+  if (scientific) {
+    m = format(m, digits = digits, scientific = scientific)
+    ci = format(ci, digits = digits, scientific = scientific)
   }
   else {
-    if (matchFUN == 1) {
-      v[1, 1] = paste(name, ", median [IQR]", sep = "")
-    }
-    if (matchFUN == 2) {
-      v[1, 1] = paste(name, ", median [95%CI]", sep = "")
-    }
-    names(v) = c("Feature", levels(y), "Total", "p-value")
+    m = round(m, digits = digits)
+    ci = round(ci, digits = digits)
   }
-  v[v == "NA [NA NA]"] = "-"
-  if (logchange == TRUE) {
-    v = cbind(v[1, 1:(nn + 2)], logchange = round(fc, digits = 2), 
-              `p-value` = v[1, (nn + 3)])
-    attr(v, "p-logchange") = fc
+  if (matchFUN == 4) {
+    txt = paste(m, " [", ci, "]", sep = "")
   }
-  if (!total.column) {
-    v = v[, -(nn + 2)]
+  else {
+    txt = paste(m, " [", ci[1], " ", ci[2], "]", sep = "")
   }
-  attr(v, "p-value") = pval
-  return(v)
+  txt
 }
+
 
                               
 #-----for categorical data 
