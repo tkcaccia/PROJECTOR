@@ -2071,7 +2071,7 @@ List corecpp(arma::mat x,
      cvpredbest=KNNPLSDACV(x,clbest,constrain,fparpls,x,fparpk);
   }
   if(FUN==3){
-     cvpredbest=KNNPLSDACV(x,clbest,constrain,fparpls,posxy,fparpk);
+     cvpredbest=KNNPLSDACV(x,clbest,constrain,fparpls,x,fparpk);
   }
   if(FUN==4){
     cvpredbest=KNNPLSDACV2(x,clbest,constrain,fparpls,posxy,fparpk,fparp2k); 
@@ -2174,7 +2174,7 @@ List corecpp(arma::mat x,
       cvpred=PLSDACV(x,cl,constrain,fparpls);  
     }
     if(FUN==2){
-      cvpred=KNNPLSDACV(x,cl,constrain,fparpls,posxy,fparpk);  
+      cvpred=KNNPLSDACV(x,cl,constrain,fparpls,x,fparpk);  
     }
     if(FUN==3){
       cvpred=KNNPLSDACV(x,cl,constrain,fparpls,posxy,fparpk);  
