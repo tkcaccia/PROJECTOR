@@ -396,7 +396,9 @@ quality_control = function(data_row,data_col,spatial_row,landmarks=NULL,FUN,data
   if (!is.null(spatial_row)){
     if (spatial_row!=data_row) 
       stop("The number of spatial coordinates and number of entries do not match.")    
-    if (matchFUN==4) 
+
+  } else{
+    if (matchFUN==2 | matchFUN==3 | matchFUN==4) 
       stop("The spatial coordinates are not provvided.")
   }
   if(!is.null(landmarks)){
