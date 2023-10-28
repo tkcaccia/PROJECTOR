@@ -387,7 +387,6 @@ pca = function(x,...){
 
 
 quality_control = function(data_row,data_col,spatial_row,landmarks=NULL,FUN,data=NULL,
-                           FUN_VAR = function(x) { x },
                            FUN_SAM = function(x) { x },
                            f.par.knn, f.par.pls, f.par.pk, f.par.p2k){
   matchFUN = pmatch(FUN[1], c("PLS","PKP","PKS","P2K", "KNN"))
@@ -401,52 +400,14 @@ quality_control = function(data_row,data_col,spatial_row,landmarks=NULL,FUN,data
     if (matchFUN==3 | matchFUN==4) 
       stop("The spatial coordinates are not provvided.")
   }
-  if(!is.null(landmarks)){
-    nlandmarks = landmarks
-    if (length(landmarks) > 1) {
-      if (max(landmarks) > data_row) {
-        stop("A selected landmark exceed the number of entries")
-      }
-      if (length(table(table(landmarks))) > 1) {
-        stop("Repeated landmarks are not allowed")
-      }
-      if (length(landmarks) > data_row) {
-        stop("The number of landmarks exceed the number of entries")
-      }
-      nlandmarks = length(landmarks)
-      landpoints=NULL
-    } else{
-      
-      if (data_row > nlandmarks) {
-        if (length(landmarks) > 1) {
-          landpoints = landmarks
-        } else {
-          landpoints = sort(sample(data_row, landmarks))
-          clust = as.numeric(kmeans(data, landmarks)$cluster)
-          landpoints = NULL
-          for (ii in 1:landmarks) {
-            www = which(clust == ii)
-            if (length(www) == 1) {
-              landpoints = c(landpoints, www)
-            } else {
-              landpoints = c(landpoints, sample(www)[1])
-            }
-          }
-        }
-      }  else{
-        landpoints=1:data_row
-        nlandmarks=data_row
-      }
-    }
-  }  else{
-    nlandmarks=data_row
-    landpoints=NULL
-  }
-  SEL_VAR = FUN_VAR(data_col)
-  SEL_SAM = FUN_SAM(nlandmarks)
-  if (f.par.pls > SEL_VAR & (matchFUN == 1 | matchFUN == 2 | matchFUN == 3 | matchFUN == 4)) {
-    message("The number of components selected for PLS-DA is too high and it will be automatically reduced to ", SEL_VAR)
-    f.par.pls = SEL_VAR
+  if(data_row<landmarks){
+    landmarks=ceiling(data_row*0.75)
+  } 
+
+
+  if (f.par.pls > data_col & (matchFUN == 1 | matchFUN == 2 | matchFUN == 3 | matchFUN == 4)) {
+    message("The number of components selected for PLS-DA is too high and it will be automatically reduced to ", data_col)
+    f.par.pls = data_col
   }
   if ((f.par.knn > (SEL_SAM/4) & matchFUN == 5)  |   # KNN
       (f.par.pk > (SEL_SAM/4) & (matchFUN == 2 | matchFUN == 3 | matchFUN == 4)) |   # PKP PKS P2K
@@ -454,7 +415,7 @@ quality_control = function(data_row,data_col,spatial_row,landmarks=NULL,FUN,data
     stop("The number of k neighbors selected for KNN is too high.")
   }
   
-  return(list(matchFUN=matchFUN,nlandmarks=nlandmarks,landpoints=landpoints,SEL_VAR=SEL_VAR,SEL_SAM=SEL_SAM,f.par.pls=f.par.pls))
+  return(list(matchFUN=matchFUN,landmarks=landmarks,f.par.pls=f.par.pls))
 }
 
 
@@ -463,14 +424,14 @@ KODAMA.matrix =
 function (data,                       # Dataset
           spatial = NULL,             # In spatial are conteined the spatial coordinates of each entries
           M = 100, Tcycle = 20, 
-          FUN_VAR = function(x) { x },
+
           FUN_SAM = function(x) { ceiling(x * 0.75)}, 
           bagging = FALSE, FUN = c("PLS","PKP","PKS","P2K", "KNN"), 
           f.par.knn = 5, f.par.pls = 5, f.par.pk= 20, f.par.p2k = 20,
           W = NULL, 
           constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000, 
           neighbors = min(c(landmarks, nrow(data)/3)) + 1, 
-          splitting = 50, spatial.resolution = 0.3 ,clust_contrain = FALSE) 
+          splitting = 50, spatial.resolution = 0.3 ) 
 {
   if (sum(is.na(data)) > 0) {
     stop("Missing values are present")
@@ -491,7 +452,7 @@ function (data,                       # Dataset
   if (is.null(constrain)) 
     constrain = 1:nsample
   shake = FALSE
-  landpoints = NULL
+  
   
 
   QC=quality_control(data_row = nsample,
@@ -500,18 +461,17 @@ function (data,                       # Dataset
                      landmarks = landmarks,
                      FUN = FUN,
                      data = data,
-                     FUN_VAR = FUN_VAR,
-                     FUN_SAM = FUN_SAM,
                      f.par.knn = f.par.knn,
                      f.par.pls = f.par.pls, 
                      f.par.pk = f.par.pk, 
                      f.par.p2k = f.par.p2k)
   matchFUN=QC$matchFUN
-  nlandmarks=QC$nlandmarks
-  landpoints=QC$landpoints
-  SEL_VAR=QC$SEL_VAR
+  landmarks=QC$landmarks
   SEL_SAM=QC$SEL_SAM
   f.par.pls=QC$f.par.pls
+
+  FUN_VAR = function(x) { x },
+
   
   LMARK = (nsample > nlandmarks)
   if (LMARK) {
@@ -551,16 +511,30 @@ function (data,                       # Dataset
   pb <- txtProgressBar(min = 1, max = M, style = 1)
   for (k in 1:M) {
     setTxtProgressBar(pb, k)
-    sva = sample(nva, SEL_VAR, FALSE, NULL)
+
+ landpoints = sort(sample(data_row, landmarks))
+          clust = as.numeric(kmeans(data, landmarks)$cluster)
+          landpoints = NULL
+          for (ii in 1:landmarks) {
+            www = which(clust == ii)
+            if (length(www) == 1) {
+              landpoints = c(landpoints, www)
+            } else {
+              landpoints = c(landpoints, sample(www)[1])
+            }
+
+            
+
+    
     ssa = c(whT, sample(whF, SEL_SAM, bagging, NULL))
 
 
     
-    xTdata = Tdata[, sva]
+    xTdata = Tdata
 
     Tspatial_ssa = Tspatial
     Xspatial_ssa = Xspatial[ssa, ]
-    x = Xdata[ssa, sva]
+    x = Xdata[ssa, ]
     xva = ncol(x)
     xsa = nrow(x)
     Xconstrain_ssa = as.numeric(as.factor(Xconstrain[ssa]))
