@@ -386,7 +386,7 @@ pca = function(x,...){
 }
 
 
-quality_control = function(data_row,data_col,spatial_row,landmarks=NULL,FUN,data=NULL,
+quality_control = function(data_row,data_col,spatial_row,FUN,data=NULL,
                            FUN_SAM = function(x) { x },
                            f.par.knn, f.par.pls, f.par.pk, f.par.p2k){
   matchFUN = pmatch(FUN[1], c("PLS","PKP","PKS","P2K", "KNN"))
@@ -400,25 +400,20 @@ quality_control = function(data_row,data_col,spatial_row,landmarks=NULL,FUN,data
     if (matchFUN==3 | matchFUN==4) 
       stop("The spatial coordinates are not provvided.")
   }
-  if(data_row<landmarks){
-    landmarks=ceiling(data_row*0.75)
-    sdm=TRUE
-  } else{
-    sdm=FALSE
-  }
+
 
 
   if (f.par.pls > data_col & (matchFUN == 1 | matchFUN == 2 | matchFUN == 3 | matchFUN == 4)) {
     message("The number of components selected for PLS-DA is too high and it will be automatically reduced to ", data_col)
     f.par.pls = data_col
   }
-  if ((f.par.knn > (landmarks/4) & matchFUN == 5)  |   # KNN
-      (f.par.pk > (landmarks/4) & (matchFUN == 2 | matchFUN == 3 | matchFUN == 4)) |   # PKP PKS P2K
-      (f.par.p2k > (landmarks/4) & matchFUN == 4)) {          #P2K
+  if ((f.par.knn > (data_row/4) & matchFUN == 5)  |   # KNN
+      (f.par.pk > (data_row/4) & (matchFUN == 2 | matchFUN == 3 | matchFUN == 4)) |   # PKP PKS P2K
+      (f.par.p2k > (data_row/4) & matchFUN == 4)) {          #P2K
     stop("The number of k neighbors selected for KNN is too high.")
   }
   
-  return(list(matchFUN=matchFUN,landmarks=landmarks,f.par.pls=f.par.pls,simm_dissimilarity_matrix=sdm))
+  return(list(matchFUN=matchFUN,f.par.pls=f.par.pls))
 }
 
 
@@ -429,13 +424,13 @@ function (data,                       # Dataset
           M = 100, Tcycle = 20, 
 
           FUN_SAM = function(x) { ceiling(x * 0.75)}, 
-          bagging = FALSE, FUN = c("PLS","PKP","PKS","P2K", "KNN"), 
+          FUN = c("PLS","PKP","PKS","P2K", "KNN"), 
           f.par.knn = 5, f.par.pls = 5, f.par.pk= 20, f.par.p2k = 20,
           W = NULL, 
-          constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000, 
-          neighbors = min(c(landmarks, nrow(data)/3)) + 1, 
+          constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000,  
           splitting = 50, spatial.resolution = 0.3 ) 
 {
+  neighbors = min(c(landmarks, nrow(data)/3)) + 1
   if (sum(is.na(data)) > 0) {
     stop("Missing values are present")
   } 
@@ -456,7 +451,12 @@ function (data,                       # Dataset
     constrain = 1:nsample
   shake = FALSE
   
-  
+  if(nsample<=landmarks){
+    landmarks=ceiling(data_row*0.75)
+    simm_dissimilarity_matrix=TRUE
+  } else{
+    simm_dissimilarity_matrix=FALSE
+  }
 
   QC=quality_control(data_row = nsample,
                      data_col = nvariable,
@@ -469,10 +469,8 @@ function (data,                       # Dataset
                      f.par.pk = f.par.pk, 
                      f.par.p2k = f.par.p2k)
   matchFUN=QC$matchFUN
-  landmarks=QC$landmarks
-  SEL_SAM=QC$SEL_SAM
+
   f.par.pls=QC$f.par.pls
-  simm_dissimilarity_matrix=QC$simm_dissimilarity_matrix
 
 
 
@@ -481,18 +479,18 @@ function (data,                       # Dataset
 
   vect_acc = matrix(NA, nrow = M, ncol = Tcycle)
   accu = NULL
-  whF = which(!Xfix)
-  whT = which(Xfix)
-  SEL_SAM = SEL_SAM - length(whT)
+
+
   pb <- txtProgressBar(min = 1, max = M, style = 1)
-  landpoints_list=NULL
+
   for (k in 1:M) {
     setTxtProgressBar(pb, k)
 
     # The landmarks samples are chosen in a way to cover all different profile
     # The data are divided in a number of clusters equal to the number of landmarks
     # A landpoint is chosen randomly from each cluster
-    
+
+    landpoints=NULL
     clust = as.numeric(kmeans(data, landmarks)$cluster)
     for (ii in 1:landmarks) {
       www = which(clust == ii)
@@ -508,6 +506,8 @@ function (data,                       # Dataset
     Xdata = data[landpoints, , drop = FALSE]
     Tfix = fix[-landpoints]
     Xfix = fix[landpoints]
+    whF = which(!Xfix)
+    whT = which(Xfix)
     Tconstrain = as.numeric(as.factor(constrain[-landpoints]))
     Xconstrain = as.numeric(as.factor(constrain[landpoints]))
     vect_proj = matrix(NA, nrow = M, ncol = nrow(Tdata))
