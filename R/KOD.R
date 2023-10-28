@@ -461,7 +461,6 @@ function (data,                       # Dataset
   QC=quality_control(data_row = nsample,
                      data_col = nvariable,
                      spatial_row = nsample_spatial,
-                     landmarks = landmarks,
                      FUN = FUN,
                      data = data,
                      f.par.knn = f.par.knn,
@@ -510,7 +509,6 @@ function (data,                       # Dataset
     whT = which(Xfix)
     Tconstrain = as.numeric(as.factor(constrain[-landpoints]))
     Xconstrain = as.numeric(as.factor(constrain[landpoints]))
-    vect_proj = matrix(NA, nrow = M, ncol = nrow(Tdata))
     Xspatial = spatial[landpoints, , drop = FALSE]
     Tspatial = spatial[-landpoints, , drop = FALSE]
 
@@ -563,11 +561,9 @@ function (data,                       # Dataset
       
       yatta$vect_proj = as.vector(yatta$vect_proj)
       yatta$vect_proj[Tfix] = W[-landpoints][Tfix]
-      vect_proj[k, ] = yatta$vect_proj
-      landpoints_list[[k]]=landpoints
 
       res[k, landpoints] = clbest
-      res[k, -landpoints] = vect_proj
+      res[k, -landpoints] = yatta$vect_proj
 
 
 
