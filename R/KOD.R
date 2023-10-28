@@ -452,7 +452,7 @@ function (data,                       # Dataset
   shake = FALSE
   
   if(nsample<=landmarks){
-    landmarks=ceiling(data_row*0.75)
+    landmarks=ceiling(nsample*0.75)
     simm_dissimilarity_matrix=TRUE
   } else{
     simm_dissimilarity_matrix=FALSE
