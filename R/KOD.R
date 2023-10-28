@@ -476,12 +476,7 @@ function (data,                       # Dataset
 
 
 
-  
-  nva = ncol(Xdata)
-  nsa = nrow(Xdata)
-  res = matrix(nrow = M, ncol = nsa)
-  ma = matrix(0, ncol = nsa, nrow = nsa)
-  normalization = matrix(0, ncol = nsa, nrow = nsa)
+  res = matrix(nrow = M, ncol = nsample)
 
 
   vect_acc = matrix(NA, nrow = M, ncol = Tcycle)
@@ -490,6 +485,7 @@ function (data,                       # Dataset
   whT = which(Xfix)
   SEL_SAM = SEL_SAM - length(whT)
   pb <- txtProgressBar(min = 1, max = M, style = 1)
+  landpoints_list=NULL
   for (k in 1:M) {
     setTxtProgressBar(pb, k)
 
@@ -519,25 +515,7 @@ function (data,                       # Dataset
     Tspatial = spatial[-landpoints, , drop = FALSE]
 
     
-  #  x = Xdata[ssa, ]
-  #  xva = ncol(x)
-  #  xsa = nrow(x)
- #   Xconstrain_ssa = as.numeric(as.factor(Xconstrain[ssa]))
-  #  Xfix_ssa = Xfix[ssa]
-  #  del_n = rep(NA, nrow(x))
-  #  for (ik in 1:(nrow(x) - 1)) {
-  #    if (is.na(del_n[ik])) {
-  #      del_n[ik] = ik
-  #      for (ij in 2:nrow(x)) {
-  #        if (all(x[ik, ] == x[ij, ])) 
-  #          del_n[ij] = ik
-  #      }
-  #    }
-  3  }
-  #  if (is.na(del_n[nrow(x)])) 
-  #    del_n[nrow(x)] = nrow(x)
-  #  xsa_same_point = length(unique(del_n))
-
+ 
 
     if (spatial_flag) {
       spatialclusters=as.numeric(kmeans(Xspatial, nspatialclusters)$cluster)
@@ -586,69 +564,70 @@ function (data,                       # Dataset
       yatta$vect_proj = as.vector(yatta$vect_proj)
       yatta$vect_proj[Tfix] = W[-landpoints][Tfix]
       vect_proj[k, ] = yatta$vect_proj
+      landpoints_list[[k]]=landpoints
+
+      res[k, landpoints] = clbest
+      res[k, -landpoints] = vect_proj
 
 
 
+      
     }
   }
-
-    total_res = matrix(nrow = M, ncol = nsample)
-    total_res[, landpoints] = res
-    total_res[, -landpoints] = vect_proj
-
-      if(simm_dissimilarity_matrix){
-      
-        uni = unique(clbest)
-        nun = length(uni)
-        for (ii in 1:nun) ma[landpoints[clbest == uni[ii]], landpoints[clbest ==  uni[ii]]] = ma[landpoints[clbest == uni[ii]], landpoints[clbest == uni[ii]]] + 1
-        normalization[landpoints, landpoints] = normalization[landpoints, landpoints] + 1
-        res[k, landpoints] = clbest
-      }
-
-                                  
-
-                                  
-                                  
-  close(pb)
-  ma = ma/normalization
-  Edist = as.matrix(dist(Xdata_landpoints))
-  ma[ma < epsilon] = 0
-  mam = (1/ma) * Edist
-  mam[is.na(mam)] <- .Machine$double.xmax
-  mam[is.infinite(mam) & mam > 0] <- .Machine$double.xmax
-  mam = floyd(mam)
-  mam[mam == .Machine$double.xmax] <- NA
-  prox = Edist/mam
-  diag(prox) = 1
-  prox[is.na(prox)] = 0
-  maxvalue = max(mam, na.rm = TRUE)
-  mam[is.na(mam)] = maxvalue
-  y = ma
-  diag(y) = NA
-  yy = as.numeric(y)
-  yy = yy[!is.na(yy)]
-  yy = yy/sum(yy)
-  H = -sum(ifelse(yy > 0, yy * log(yy), 0))
-  dissimilarity = mam
   
-
-    knn_Armadillo = knn_Armadillo(data, data, neighbors + 
-                                    1)
-    knn_Armadillo$distances = knn_Armadillo$distances[, -1]
-    knn_Armadillo$nn_index = knn_Armadillo$nn_index[, -1]
-    for (i_tsne in 1:nrow(data)) {
-      for (j_tsne in 1:neighbors) {
-        kod_tsne = mean(total_res[, i_tsne] == total_res[, knn_Armadillo$nn_index[i_tsne, j_tsne]], na.rm = TRUE)
-        knn_Armadillo$distances[i_tsne, j_tsne] = knn_Armadillo$distances[i_tsne,  j_tsne]/kod_tsne
-      }
-      oo_tsne = order(knn_Armadillo$distance[i_tsne, ])
-      knn_Armadillo$distances[i_tsne, ] = knn_Armadillo$distances[i_tsne, oo_tsne]
-      knn_Armadillo$nn_index[i_tsne, ] = knn_Armadillo$nn_index[i_tsne, oo_tsne]
+  close(pb)
+  dissimilarity=NULL
+  if(simm_dissimilarity_matrix){
+    ma = matrix(0, ncol = nsample, nrow = nsample)
+    for(k in 1:M){
+      uni = unique(res[k,])
+      nun = length(uni)
+      res_k=res[k,]
+      for (ii in 1:nun) 
+        ma[res[k,] == uni[ii], res_k ==  uni[ii]] = ma[res_k == uni[ii], res_k == uni[ii]] + 1
     }
+    ma = ma/M
+    Edist = as.matrix(dist(data))
+    ma[ma < epsilon] = 0
+
+#  Entropy calculation
+#    y = ma
+#    diag(y) = NA
+#    yy = as.numeric(y)
+#    yy = yy[!is.na(yy)]
+#    yy = yy/sum(yy)
+#    H = -sum(ifelse(yy > 0, yy * log(yy), 0))
+    
+    mam = (1/ma) * Edist
+    mam[is.na(mam)] <- .Machine$double.xmax
+    mam[is.infinite(mam) & mam > 0] <- .Machine$double.xmax
+    mam = floyd(mam)
+    mam[mam == .Machine$double.xmax] <- NA
+    prox = Edist/mam
+    diag(prox) = 1
+    prox[is.na(prox)] = 0
+    maxvalue = max(mam, na.rm = TRUE)
+    mam[is.na(mam)] = maxvalue
+
+    dissimilarity = mam
+  }
+
+  knn_Armadillo = knn_Armadillo(data, data, neighbors + 1)
+  knn_Armadillo$distances = knn_Armadillo$distances[, -1]
+  knn_Armadillo$nn_index = knn_Armadillo$nn_index[, -1]
+  for (i_tsne in 1:nrow(data)) {
+    for (j_tsne in 1:neighbors) {
+      kod_tsne = mean(res[, i_tsne] == res[, knn_Armadillo$nn_index[i_tsne, j_tsne]], na.rm = TRUE)
+      knn_Armadillo$distances[i_tsne, j_tsne] = knn_Armadillo$distances[i_tsne,  j_tsne]/kod_tsne
+    }
+    oo_tsne = order(knn_Armadillo$distance[i_tsne, ])
+    knn_Armadillo$distances[i_tsne, ] = knn_Armadillo$distances[i_tsne, oo_tsne]
+    knn_Armadillo$nn_index[i_tsne, ] = knn_Armadillo$nn_index[i_tsne, oo_tsne]
+  }
 
   knn_Armadillo$neighbors = neighbors
   return(list(dissimilarity = dissimilarity, acc = accu, proximity = ma, 
-              v = vect_acc, res = total_res, entropy = H, 
+              v = vect_acc, res = res, 
               landpoints = landpoints, knn_Armadillo = knn_Armadillo, 
               data = data))
 }
