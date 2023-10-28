@@ -402,20 +402,23 @@ quality_control = function(data_row,data_col,spatial_row,landmarks=NULL,FUN,data
   }
   if(data_row<landmarks){
     landmarks=ceiling(data_row*0.75)
-  } 
+    sdm=TRUE
+  } else{
+    sdm=FALSE
+  }
 
 
   if (f.par.pls > data_col & (matchFUN == 1 | matchFUN == 2 | matchFUN == 3 | matchFUN == 4)) {
     message("The number of components selected for PLS-DA is too high and it will be automatically reduced to ", data_col)
     f.par.pls = data_col
   }
-  if ((f.par.knn > (SEL_SAM/4) & matchFUN == 5)  |   # KNN
-      (f.par.pk > (SEL_SAM/4) & (matchFUN == 2 | matchFUN == 3 | matchFUN == 4)) |   # PKP PKS P2K
-      (f.par.p2k > (SEL_SAM/4) & matchFUN == 4)) {          #P2K
+  if ((f.par.knn > (landmarks/4) & matchFUN == 5)  |   # KNN
+      (f.par.pk > (landmarks/4) & (matchFUN == 2 | matchFUN == 3 | matchFUN == 4)) |   # PKP PKS P2K
+      (f.par.p2k > (landmarks/4) & matchFUN == 4)) {          #P2K
     stop("The number of k neighbors selected for KNN is too high.")
   }
   
-  return(list(matchFUN=matchFUN,landmarks=landmarks,f.par.pls=f.par.pls))
+  return(list(matchFUN=matchFUN,landmarks=landmarks,f.par.pls=f.par.pls,simm_dissimilarity_matrix=sdm))
 }
 
 
@@ -469,31 +472,9 @@ function (data,                       # Dataset
   landmarks=QC$landmarks
   SEL_SAM=QC$SEL_SAM
   f.par.pls=QC$f.par.pls
+  simm_dissimilarity_matrix=QC$simm_dissimilarity_matrix
 
-  FUN_VAR = function(x) { x },
 
-  
-  LMARK = (nsample > nlandmarks)
-  if (LMARK) {
-    Tdata = data[-landpoints, , drop = FALSE]
-    Xdata = data[landpoints, , drop = FALSE]
-    Xdata_landpoints = Xdata
-    Tfix = fix[-landpoints]
-    Xfix = fix[landpoints]
-    Tconstrain = constrain[-landpoints]
-    Xconstrain = constrain[landpoints]
-    vect_proj = matrix(NA, nrow = M, ncol = nrow(Tdata))
-    Xspatial = spatial[landpoints, , drop = FALSE]
-    Tspatial = spatial[-landpoints, , drop = FALSE]
-  } else {
-    Xdata = data
-    Tdata = NULL
-    Xdata_landpoints = Xdata
-    Xfix = fix
-    Xconstrain = constrain
-    Xspatial = spatial
-    Tspatial = NULL
-  }
 
   
   nva = ncol(Xdata)
@@ -512,59 +493,64 @@ function (data,                       # Dataset
   for (k in 1:M) {
     setTxtProgressBar(pb, k)
 
- landpoints = sort(sample(data_row, landmarks))
-          clust = as.numeric(kmeans(data, landmarks)$cluster)
-          landpoints = NULL
-          for (ii in 1:landmarks) {
-            www = which(clust == ii)
-            if (length(www) == 1) {
-              landpoints = c(landpoints, www)
-            } else {
-              landpoints = c(landpoints, sample(www)[1])
-            }
-
-            
-
+    # The landmarks samples are chosen in a way to cover all different profile
+    # The data are divided in a number of clusters equal to the number of landmarks
+    # A landpoint is chosen randomly from each cluster
     
-    ssa = c(whT, sample(whF, SEL_SAM, bagging, NULL))
-
-
-    
-    xTdata = Tdata
-
-    Tspatial_ssa = Tspatial
-    Xspatial_ssa = Xspatial[ssa, ]
-    x = Xdata[ssa, ]
-    xva = ncol(x)
-    xsa = nrow(x)
-    Xconstrain_ssa = as.numeric(as.factor(Xconstrain[ssa]))
-    Xfix_ssa = Xfix[ssa]
-    del_n = rep(NA, nrow(x))
-    for (ik in 1:(nrow(x) - 1)) {
-      if (is.na(del_n[ik])) {
-        del_n[ik] = ik
-        for (ij in 2:nrow(x)) {
-          if (all(x[ik, ] == x[ij, ])) 
-            del_n[ij] = ik
-        }
-      }
+    clust = as.numeric(kmeans(data, landmarks)$cluster)
+    for (ii in 1:landmarks) {
+      www = which(clust == ii)
+      lwww=length(www)
+      landpoints = c(landpoints,www[sample.int(lwww, 1, FALSE, NULL)])
     }
-    if (is.na(del_n[nrow(x)])) 
-      del_n[nrow(x)] = nrow(x)
-    xsa_same_point = length(unique(del_n))
+
+    # Variables are splitted in two where 
+    # X variables are the variables for cross-validation accuracy maximizzation
+    # T variables are the variable for the projections
     
-    if (xsa_same_point <= 200 || length(unique(x)) < 50) {
-      XW = Xconstrain_ssa
+    Tdata = data[-landpoints, , drop = FALSE]
+    Xdata = data[landpoints, , drop = FALSE]
+    Tfix = fix[-landpoints]
+    Xfix = fix[landpoints]
+    Tconstrain = as.numeric(as.factor(constrain[-landpoints]))
+    Xconstrain = as.numeric(as.factor(constrain[landpoints]))
+    vect_proj = matrix(NA, nrow = M, ncol = nrow(Tdata))
+    Xspatial = spatial[landpoints, , drop = FALSE]
+    Tspatial = spatial[-landpoints, , drop = FALSE]
+
+    
+  #  x = Xdata[ssa, ]
+  #  xva = ncol(x)
+  #  xsa = nrow(x)
+ #   Xconstrain_ssa = as.numeric(as.factor(Xconstrain[ssa]))
+  #  Xfix_ssa = Xfix[ssa]
+  #  del_n = rep(NA, nrow(x))
+  #  for (ik in 1:(nrow(x) - 1)) {
+  #    if (is.na(del_n[ik])) {
+  #      del_n[ik] = ik
+  #      for (ij in 2:nrow(x)) {
+  #        if (all(x[ik, ] == x[ij, ])) 
+  #          del_n[ij] = ik
+  #      }
+  #    }
+  3  }
+  #  if (is.na(del_n[nrow(x)])) 
+  #    del_n[nrow(x)] = nrow(x)
+  #  xsa_same_point = length(unique(del_n))
+
+
+    if (spatial_flag) {
+      spatialclusters=as.numeric(kmeans(Xspatial, nspatialclusters)$cluster)
+      tab = apply(table(spatialclusters, Xconstrain), 2,which.max)
+      Xconstrain = as.numeric(as.factor(tab[as.character(Xconstrain)]))  
+    }
+  
+    if (landmarks<200) {
+      XW = Xconstrain
     } else {
-      if (spatial_flag) {
-         spatialclusters=as.numeric(kmeans(Xspatial_ssa, nspatialclusters)$cluster)
-         tab = apply(table(spatialclusters, Xconstrain_ssa), 2,which.max)
-         Xconstrain_ssa = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))  
-      }
-      
-      clust = as.numeric(kmeans(x, splitting)$cluster)
-      tab = apply(table(clust, Xconstrain_ssa), 2, which.max)
-      XW = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))
+      clust = as.numeric(kmeans(Xdata, splitting)$cluster)
+      tab = apply(table(clust, Xconstrain), 2, which.max)
+      XW = as.numeric(as.factor(tab[as.character(Xconstrain)]))
     }
 
     if(!is.null(W)){
@@ -573,8 +559,8 @@ function (data,                       # Dataset
       unw = unw[-which(is.na(unw))]
       ghg = is.na(SV_startingvector)
       SV_startingvector[ghg] = as.numeric(as.factor(SV_startingvector[ghg])) + length(unw)
-      tab = apply(table(SV_startingvector,Xconstrain_ssa), 2,  which.max)
-      XW = as.numeric(as.factor(tab[as.character(Xconstrain_ssa)]))
+      tab = apply(table(SV_startingvector,Xconstrain), 2,  which.max)
+      XW = as.numeric(as.factor(tab[as.character(Xconstrain)]))
     }
    
     
@@ -583,10 +569,10 @@ function (data,                       # Dataset
     yatta = 0
     attr(yatta, "class") = "try-error"
     while (!is.null(attr(yatta, "class"))) {
-      yatta = try(core_cpp(x, xTdata, clbest, Tcycle, FUN, 
+      yatta = try(core_cpp(Xdata, Tdata, clbest, Tcycle, FUN, 
                            f.par.knn,f.par.pls,f.par.pk,f.par.p2k,
-                           Xconstrain_ssa, Xfix_ssa, shake, Xspatial_ssa, 
-                           Tspatial_ssa), silent = FALSE)
+                           Xconstrain, Xfix, shake, Xspatial, 
+                           Tspatial), silent = FALSE)
 
     }
     options(warn = 0)
@@ -596,18 +582,33 @@ function (data,                       # Dataset
       yatta$vect_acc = as.vector(yatta$vect_acc)
       yatta$vect_acc[yatta$vect_acc == -1] = NA
       vect_acc[k, ] = yatta$vect_acc
-      if (LMARK) {
-        yatta$vect_proj = as.vector(yatta$vect_proj)
-        yatta$vect_proj[Tfix] = W[-landpoints][Tfix]
-        vect_proj[k, ] = yatta$vect_proj
-      }
-      uni = unique(clbest)
-      nun = length(uni)
-      for (ii in 1:nun) ma[ssa[clbest == uni[ii]], ssa[clbest ==  uni[ii]]] = ma[ssa[clbest == uni[ii]], ssa[clbest == uni[ii]]] + 1
-      normalization[ssa, ssa] = normalization[ssa, ssa] + 1
-      res[k, ssa] = clbest
+      
+      yatta$vect_proj = as.vector(yatta$vect_proj)
+      yatta$vect_proj[Tfix] = W[-landpoints][Tfix]
+      vect_proj[k, ] = yatta$vect_proj
+
+
+
     }
   }
+
+    total_res = matrix(nrow = M, ncol = nsample)
+    total_res[, landpoints] = res
+    total_res[, -landpoints] = vect_proj
+
+      if(simm_dissimilarity_matrix){
+      
+        uni = unique(clbest)
+        nun = length(uni)
+        for (ii in 1:nun) ma[landpoints[clbest == uni[ii]], landpoints[clbest ==  uni[ii]]] = ma[landpoints[clbest == uni[ii]], landpoints[clbest == uni[ii]]] + 1
+        normalization[landpoints, landpoints] = normalization[landpoints, landpoints] + 1
+        res[k, landpoints] = clbest
+      }
+
+                                  
+
+                                  
+                                  
   close(pb)
   ma = ma/normalization
   Edist = as.matrix(dist(Xdata_landpoints))
@@ -629,10 +630,8 @@ function (data,                       # Dataset
   yy = yy/sum(yy)
   H = -sum(ifelse(yy > 0, yy * log(yy), 0))
   dissimilarity = mam
-  if (LMARK) {
-    total_res = matrix(nrow = M, ncol = nsample)
-    total_res[, landpoints] = res
-    total_res[, -landpoints] = vect_proj
+  
+
     knn_Armadillo = knn_Armadillo(data, data, neighbors + 
                                     1)
     knn_Armadillo$distances = knn_Armadillo$distances[, -1]
@@ -646,18 +645,7 @@ function (data,                       # Dataset
       knn_Armadillo$distances[i_tsne, ] = knn_Armadillo$distances[i_tsne, oo_tsne]
       knn_Armadillo$nn_index[i_tsne, ] = knn_Armadillo$nn_index[i_tsne, oo_tsne]
     }
-  } else {
-    knn_Armadillo = list()
-    knn_Armadillo$nn_index = matrix(ncol = ncol(mam), nrow = nrow(mam))
-    for (i_tsne in 1:nrow(data)) {
-      oo_tsne = order(mam[i_tsne, ])
-      mam[i_tsne, ] = mam[i_tsne, oo_tsne]
-      knn_Armadillo$nn_index[i_tsne, ] = oo_tsne
-    }
-    knn_Armadillo$nn_index = knn_Armadillo$nn_index[, -1][,1:neighbors]
-    knn_Armadillo$distances = mam[, -1][, 1:neighbors]
-    total_res = res
-  }
+
   knn_Armadillo$neighbors = neighbors
   return(list(dissimilarity = dissimilarity, acc = accu, proximity = ma, 
               v = vect_acc, res = total_res, entropy = H, 
