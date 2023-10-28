@@ -573,6 +573,7 @@ function (data,                       # Dataset
   
   close(pb)
   dissimilarity=NULL
+  ma=NULL
   if(simm_dissimilarity_matrix){
     ma = matrix(0, ncol = nsample, nrow = nsample)
     for(k in 1:M){
