@@ -387,7 +387,6 @@ pca = function(x,...){
 
 
 quality_control = function(data_row,data_col,spatial_row,FUN,data=NULL,
-                           FUN_SAM = function(x) { x },
                            f.par.knn, f.par.pls, f.par.pk, f.par.p2k){
   matchFUN = pmatch(FUN[1], c("PLS","PKP","PKS","P2K", "KNN"))
   if (is.na(matchFUN)) 
@@ -422,12 +421,10 @@ KODAMA.matrix =
 function (data,                       # Dataset
           spatial = NULL,             # In spatial are conteined the spatial coordinates of each entries
           M = 100, Tcycle = 20, 
-
-          FUN_SAM = function(x) { ceiling(x * 0.75)}, 
           FUN = c("PLS","PKP","PKS","P2K", "KNN"), 
           f.par.knn = 5, f.par.pls = 5, f.par.pk= 20, f.par.p2k = 20,
           W = NULL, 
-          constrain = NULL, fix = NULL, epsilon = 0.05, dims = 2, landmarks = 10000,  
+          constrain = NULL, fix = NULL, epsilon = 0.05, landmarks = 10000,  
           splitting = 50, spatial.resolution = 0.3 ) 
 {
   neighbors = min(c(landmarks, nrow(data)/3)) + 1
@@ -438,7 +435,6 @@ function (data,                       # Dataset
   nsample = nrow(data)
   nvariable = ncol(data)
   nsample_spatial= nrow(spatial)
-  nspatialclusters=round(nsample*spatial.resolution)
   
   if (is.null(spatial)) {
     spatial_flag = FALSE
@@ -458,6 +454,8 @@ function (data,                       # Dataset
     simm_dissimilarity_matrix=FALSE
   }
 
+  nspatialclusters=round(landmarks*spatial.resolution)
+  
   QC=quality_control(data_row = nsample,
                      data_col = nvariable,
                      spatial_row = nsample_spatial,
