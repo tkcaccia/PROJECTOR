@@ -93,9 +93,6 @@ KNNPLSDACV <- function(x, cl, constrain, k, pos, knn) {
     .Call('KODAMA_KNNPLSDACV', PACKAGE = 'KODAMA', x, cl, constrain, k, pos, knn)
 }
 
-KNNPLSDACV2 <- function(x, cl, constrain, k, pos, knn_profile, knn_pos) {
-    .Call('KODAMA_KNNPLSDACV2', PACKAGE = 'KODAMA', x, cl, constrain, k, pos, knn_profile, knn_pos)
-}
 
 RQ <- function(yData, yPred) {
   .Call('KODAMA_RQ', PACKAGE = 'KODAMA', yData, yPred)
@@ -206,8 +203,8 @@ double_knn_cv <- function(x, yy, constrain, type, verbose, compmax,optim,scaling
 }
 
 
-corecpp <- function(x, xTdata, clbest, Tcycle, FUN, f.par.knn, f.par.pls, f.par.pk, f.par.p2k, constrain, fix, shake, proj, posxy, posxyTdata ) {
-    .Call('KODAMA_corecpp', PACKAGE = 'KODAMA', x, xTdata, clbest, Tcycle, FUN, f.par.knn, f.par.pls, f.par.pk, f.par.p2k,  constrain, fix, shake, proj, posxy, posxyTdata )
+corecpp <- function(x, xTdata, clbest, Tcycle, FUN, f.par.knn, f.par.pls, constrain, fix, shake, proj, posxy, posxyTdata ) {
+    .Call('KODAMA_corecpp', PACKAGE = 'KODAMA', x, xTdata, clbest, Tcycle, FUN, f.par.knn, f.par.pls, constrain, fix, shake, proj, posxy, posxyTdata )
 }
 
 knn_Armadillo <- function(Xtrain, Xtest, k) {
