@@ -1787,7 +1787,7 @@ List corecpp(arma::mat x,
 
   }
   if(FUN==2){
-     cvpredbest=KNNPLSDACV(x,clbest,constrain,fparpls,x,fparpk);
+     cvpredbest=KNNPLSDACV(x,clbest,constrain,fparpls,x,fparknn);
   }
   if(FUN==3){
     cvpredbest=KNNCV(x,clbest,constrain,fparknn); 
@@ -1887,7 +1887,7 @@ List corecpp(arma::mat x,
       cvpred=PLSDACV(x,cl,constrain,fparpls);  
     }
     if(FUN==2){
-      cvpred=KNNPLSDACV(x,cl,constrain,fparpls,x,fparpk);  
+      cvpred=KNNPLSDACV(x,cl,constrain,fparpls,x,fparknn);  
     }
     if(FUN==3){
       cvpred=KNNCV(x,cl,constrain,fparknn);
@@ -1936,7 +1936,7 @@ List corecpp(arma::mat x,
     }
     if(FUN==2){
       arma::mat lcm=transformy(clbest);
-      List res=knn_Armadillo(x,xTdata,fparpk);
+      List res=knn_Armadillo(x,xTdata,fparknn);
       arma::mat POS_knn=res[0];
       
       projmat=pred_pls_pos(x,lcm,xTdata,fparpls,POS_knn);
