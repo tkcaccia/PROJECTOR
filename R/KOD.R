@@ -455,7 +455,7 @@ function (data,                       # Dataset
                      FUN = FUN,
                      data = data,
                      f.par.knn = f.par.knn,
-                     f.par.pls = f.par.pls
+                     f.par.pls = f.par.pls)
   matchFUN=QC$matchFUN
 
   f.par.pls=QC$f.par.pls
