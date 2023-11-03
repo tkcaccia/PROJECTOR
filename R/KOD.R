@@ -387,28 +387,21 @@ pca = function(x,...){
 
 
 quality_control = function(data_row,data_col,spatial_row,FUN,data=NULL,
-                           f.par.knn, f.par.pls, f.par.pk, f.par.p2k){
-  matchFUN = pmatch(FUN[1], c("PLS","PKP","PKS","P2K", "KNN"))
+                           f.par.knn, f.par.pls){
+  matchFUN = pmatch(FUN[1], c("PLS","PK", "KNN"))
   if (is.na(matchFUN)) 
-    stop("The method to be considered must be  \"PLS\", \"PK\", \"P2K\" or \"KNN\".")
+    stop("The method to be considered must be  \"PLS\", \"PK\", or \"KNN\".")
   if (!is.null(spatial_row)){
     if (spatial_row!=data_row) 
       stop("The number of spatial coordinates and number of entries do not match.")    
 
-  } else{
-    if (matchFUN==3 | matchFUN==4) 
-      stop("The spatial coordinates are not provvided.")
-  }
+  } 
 
-
-
-  if (f.par.pls > data_col & (matchFUN == 1 | matchFUN == 2 | matchFUN == 3 | matchFUN == 4)) {
+  if (f.par.pls > data_col & (matchFUN == 1 | matchFUN == 2)) {
     message("The number of components selected for PLS-DA is too high and it will be automatically reduced to ", data_col)
     f.par.pls = data_col
   }
-  if ((f.par.knn > (data_row/4) & matchFUN == 5)  |   # KNN
-      (f.par.pk > (data_row/4) & (matchFUN == 2 | matchFUN == 3 | matchFUN == 4)) |   # PKP PKS P2K
-      (f.par.p2k > (data_row/4) & matchFUN == 4)) {          #P2K
+  if (f.par.knn > (data_row/4) & matchFUN == 3)  {         
     stop("The number of k neighbors selected for KNN is too high.")
   }
   
@@ -421,8 +414,8 @@ KODAMA.matrix =
 function (data,                       # Dataset
           spatial = NULL,             # In spatial are conteined the spatial coordinates of each entries
           M = 100, Tcycle = 20, 
-          FUN = c("PLS","PKP","PKS","P2K", "KNN"), 
-          f.par.knn = 5, f.par.pls = 5, f.par.pk= 20, f.par.p2k = 20,
+          FUN = c("PLS","PK","KNN"), 
+          f.par.knn = 5, f.par.pls = 5,
           W = NULL, 
           constrain = NULL, fix = NULL, epsilon = 0.05, landmarks = 10000,  
           splitting = 50, spatial.resolution = 0.3 ) 
@@ -462,9 +455,7 @@ function (data,                       # Dataset
                      FUN = FUN,
                      data = data,
                      f.par.knn = f.par.knn,
-                     f.par.pls = f.par.pls, 
-                     f.par.pk = f.par.pk, 
-                     f.par.p2k = f.par.p2k)
+                     f.par.pls = f.par.pls
   matchFUN=QC$matchFUN
 
   f.par.pls=QC$f.par.pls
@@ -544,7 +535,7 @@ function (data,                       # Dataset
     attr(yatta, "class") = "try-error"
     while (!is.null(attr(yatta, "class"))) {
       yatta = try(core_cpp(Xdata, Tdata, clbest, Tcycle, FUN, 
-                           f.par.knn,f.par.pls,f.par.pk,f.par.p2k,
+                           f.par.knn,f.par.pls,
                            Xconstrain, Xfix, shake, Xspatial, 
                            Tspatial), silent = FALSE)
 
@@ -783,8 +774,8 @@ core_cpp <- function(x,
                      xTdata=NULL,
                      clbest, 
                      Tcycle=20, 
-                     FUN=c("PLS","PKP","PKS","P2K", "KNN"), 
-                     f.par.knn = 5, f.par.pls = 5, f.par.pk= 20, f.par.p2k = 20,
+                     FUN=c("PLS","PK","KNN"), 
+                     f.par.knn = 5, f.par.pls = 5,
                      constrain=NULL, 
                      fix=NULL, 
                      shake=FALSE,
@@ -797,9 +788,7 @@ core_cpp <- function(x,
                      spatial_row = nrow(posxy),
                      FUN = FUN,
                      f.par.knn = f.par.knn,
-                     f.par.pls = f.par.pls, 
-                     f.par.pk = f.par.pk, 
-                     f.par.p2k = f.par.p2k)
+                     f.par.pls = f.par.pls)
   
   matchFUN=QC$matchFUN
   f.par.pls=QC$f.par.pls
@@ -822,7 +811,7 @@ core_cpp <- function(x,
     posxy=matrix(1,ncol=1,nrow=1)
   }
 
-  out=corecpp(x, xTdata,clbest, Tcycle, matchFUN, f.par.knn , f.par.pls, f.par.pk, f.par.p2k , constrain, fix, shake,proj,posxy, posxyTdata)
+  out=corecpp(x, xTdata,clbest, Tcycle, matchFUN, f.par.knn , f.par.pls, constrain, fix, shake,proj,posxy, posxyTdata)
   return(out)
 }
 
