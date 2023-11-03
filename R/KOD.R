@@ -71,6 +71,32 @@ print.MDS.config <- function(x, ...) {
   invisible(x)
 }
 
+refine_cluster =
+function (clusterlabels, location, shape = "square") 
+{
+# dis_df = as.matrix(dist(location))
+  location=as.matrix(location)
+  if (shape == "square") {
+    num_obs = 4
+  }  else if (shape == "hexagon") {
+    num_obs = 6
+  }  else {
+    print("Select shape='hexagon' for Visium data, 'square' for ST data.")
+  }
+  temp=knn_Armadillo(location,location,num_obs+1)$nn_index
+  ma=matrix(clusterlabels[temp],ncol=ncol(temp))
+  
+  refined_pred=apply(ma,1,function(x){
+    y=table(x)
+    if(y[x[1]]<(num_obs/2)){
+      names(which(y>(num_obs/2)))
+    }else{
+      x[1]
+    }
+  })
+  return(refined_pred)
+}
+
 
 kabsch <- function(pm, qm) {
   pm_dims <- dim(pm)
