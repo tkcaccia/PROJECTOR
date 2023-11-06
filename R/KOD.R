@@ -697,7 +697,7 @@ KODAMA.visualization=function(kk,method=c("t-SNE","MDS","UMAP"),config=NULL){
     if(is.null(config)){
       config = MDS.defaults
     }
-    dimensions=cmdscale(kk$dissimilarity)
+    dimensions=cmdscale(kk$dissimilarity,k=config$dims)
     colnames(dimensions)[1:config$dims] = paste ("Dimension", 1:config$dims)
     rownames(dimensions)=rownames(kk$data)
   }
