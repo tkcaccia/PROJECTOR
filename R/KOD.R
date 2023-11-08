@@ -659,11 +659,8 @@ KODAMA.visualization=function(kk,method=c("t-SNE","MDS","UMAP"),config=NULL){
     if(config$perplexity>(floor(nrow(kk$data)/3)-1)){
       stop("Perplexity is too large for the number of samples")
     }
-  #  if(config$perplexity>(floor((kk$knn_Armadillo$neighbors+1)/3)-1)){
-  #    stop("Perplexity is too large for the distance matrix created. Please, increase the number of neighbors")
-  #  }
-    
-    ntsne=min(round(config$perplexity)*3,nrow(kk$data)-1)
+
+    ntsne=min(c(round(config$perplexity)*3,nrow(kk$data)-1,ncol(kk$knn_Armadillo$nn_index))
 
     if(is.null(config$stop_lying_iter)){
       config$stop_lying_iter = ifelse(is.null(config$Y_init), 250L, 0L)
@@ -672,7 +669,7 @@ KODAMA.visualization=function(kk,method=c("t-SNE","MDS","UMAP"),config=NULL){
     if(is.null(config$mom_switch_iter)){
       config$mom_switch_iter = ifelse(is.null(config$Y_init), 250L, 0L)
     }
-    res_tsne=Rtsne_neighbors(kk$knn_Armadillo$nn_index,kk$knn_Armadillo$distances,
+    res_tsne=Rtsne_neighbors(kk$knn_Armadillo$nn_index[,1:ntsne],kk$knn_Armadillo$distances[,1:ntsne],
                              dims = config$dims,
                              perplexity = config$perplexity,
                              theta = config$theta,
