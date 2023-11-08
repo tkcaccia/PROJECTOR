@@ -96,6 +96,7 @@ refine_cluster =
         x[1]
       }
     })
+    names(refined_pred)=names(clusterlabels)
     return(refined_pred)
   }
 
