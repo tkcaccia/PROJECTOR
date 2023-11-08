@@ -660,7 +660,7 @@ KODAMA.visualization=function(kk,method=c("t-SNE","MDS","UMAP"),config=NULL){
       stop("Perplexity is too large for the number of samples")
     }
 
-    ntsne=min(c(round(config$perplexity)*3,nrow(kk$data)-1,ncol(kk$knn_Armadillo$nn_index))
+    ntsne=min(c(round(config$perplexity)*3,nrow(kk$data)-1,ncol(kk$knn_Armadillo$nn_index)))
 
     if(is.null(config$stop_lying_iter)){
       config$stop_lying_iter = ifelse(is.null(config$Y_init), 250L, 0L)
