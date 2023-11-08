@@ -33,5 +33,6 @@ exportPattern(floyd,another,vertex,
               transformy,frequency_matching,
               RQ,quality_control,
               knn_Armadillo,
+              refine_cluster,
               txtsummary,continuous.test,categorical.test,correlation.test,multi_analysis,pca,tsne.defaults,MDS.defaults,kabsch)
 
