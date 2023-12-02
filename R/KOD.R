@@ -444,7 +444,7 @@ function (data,                       # Dataset
           f.par.knn = 5, f.par.pls = 5,
           W = NULL, 
           constrain = NULL, fix = NULL, epsilon = 0.05, landmarks = 10000,  
-          splitting = 50, spatial.resolution = 0.3 ) 
+          splitting = 50, spatial.resolution = 0.3 , simm_dissimilarity_matrix=TRUE) 
 {
   neighbors = min(c(landmarks, nrow(data)/3)) + 1
   if (sum(is.na(data)) > 0) {
@@ -468,10 +468,7 @@ function (data,                       # Dataset
   
   if(nsample<=landmarks){
     landmarks=ceiling(nsample*0.75)
-    simm_dissimilarity_matrix=TRUE
-  } else{
-    simm_dissimilarity_matrix=FALSE
-  }
+  } 
 
   nspatialclusters=round(landmarks*spatial.resolution)
   
