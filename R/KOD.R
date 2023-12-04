@@ -15,7 +15,6 @@ class(tsne.defaults) <- "tsne.config"
 
 
 umap.defaults <- list(
-umap configuration parameters,
            n_neighbors= 15,
           n_components= 2,
                 metric= euclidean,
