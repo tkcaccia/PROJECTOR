@@ -17,10 +17,10 @@ class(tsne.defaults) <- "tsne.config"
 umap.defaults <- list(
            n_neighbors= 15,
           n_components= 2,
-                metric= euclidean,
+                metric= "euclidean",
               n_epochs= 200,
-                 input= data,
-                  init= spectral,
+                 input= "data",
+                  init= "spectral",
               min_dist= 0.1,
       set_op_mix_ratio= 1,
     local_connectivity= 1,
