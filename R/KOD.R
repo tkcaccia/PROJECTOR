@@ -13,6 +13,37 @@ tsne.defaults <- list(
 )
 class(tsne.defaults) <- "tsne.config"
 
+
+umap.defaults <- list(
+umap configuration parameters,
+           n_neighbors= 15,
+          n_components= 2,
+                metric= euclidean,
+              n_epochs= 200,
+                 input= data,
+                  init= spectral,
+              min_dist= 0.1,
+      set_op_mix_ratio= 1,
+    local_connectivity= 1,
+             bandwidth= 1,
+                 alpha= 1,
+                 gamma= 1,
+  negative_sample_rate= 5,
+                     a= NA,
+                     b= NA,
+                spread= 1,
+          random_state= NA,
+       transform_state= NA,
+                   knn= NA,
+           knn_repeats= 1,
+               verbose= FALSE,
+       umap_learn_args= NA,
+            n_threads = NULL,
+        n_sgd_threads = 0
+)
+class(umap.defaults) <- "umap.config"
+
+
 MDS.defaults <- list(
   dims = 2
 )
@@ -698,8 +729,8 @@ KODAMA.visualization=function(kk,method=c("t-SNE","MDS","UMAP"),config=NULL){
     }
     u=umap.knn(kk$knn_Armadillo$nn_index,kk$knn_Armadillo$distances)
     config$knn=u
-
-    dimensions = umap(kk$data,knn=u,config=config)$layout
+   
+    dimensions = umap(kk$data,knn=u,config=config,n_sgd_threads=config$n_sgd_threads,n_threads=config$n_threads)$layout
     colnames(dimensions)[1:config$n_components] = paste ("Dimension", 1:config$n_components)
     rownames(dimensions)=rownames(kk$data)
   }
