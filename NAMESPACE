@@ -34,5 +34,5 @@ exportPattern(floyd,another,vertex,
               RQ,quality_control,
               knn_Armadillo,
               refine_cluster,
-              txtsummary,continuous.test,categorical.test,correlation.test,multi_analysis,pca,tsne.defaults,MDS.defaults,kabsch)
+              txtsummary,continuous.test,categorical.test,correlation.test,multi_analysis,pca,tsne.defaults,umap.defaults,MDS.defaults,kabsch)
 
