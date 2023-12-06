@@ -726,7 +726,7 @@ KODAMA.visualization=function(kk,method=c("t-SNE","MDS","UMAP"),config=NULL){
     if(is.null(config)){
       config = umap.defaults
     }
-    numap=min(c(round(config$neighbors)*3,nrow(kk$data)-1,ncol(kk$knn_Armadillo$nn_index)))
+    numap=min(c(round(config$n_neighbors)*3,nrow(kk$data)-1,ncol(kk$knn_Armadillo$nn_index)))
 
     
     u=umap.knn(kk$knn_Armadillo$nn_index[,1:numap],kk$knn_Armadillo$distances[,1:numap])
