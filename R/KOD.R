@@ -726,7 +726,10 @@ KODAMA.visualization=function(kk,method=c("t-SNE","MDS","UMAP"),config=NULL){
     if(is.null(config)){
       config = umap.defaults
     }
-    u=umap.knn(kk$knn_Armadillo$nn_index,kk$knn_Armadillo$distances)
+    numap=min(c(round(config$neighbors)*3,nrow(kk$data)-1,ncol(kk$knn_Armadillo$nn_index)))
+
+    
+    u=umap.knn(kk$knn_Armadillo$nn_index[,1:numap],kk$knn_Armadillo$distances[,1:numap])
     config$knn=u
    
     dimensions = umap(kk$data,knn=u,config=config,n_sgd_threads=config$n_sgd_threads,n_threads=config$n_threads)$layout
