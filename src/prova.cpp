@@ -31,7 +31,7 @@ using namespace Rcpp;
 
 
 // [[Rcpp::export]]
-arma::vec SVDS(arma::sp_mat  &X) {
+arma::vec SVDS(arma::sp_mat X) {
   arma::mat U;
   arma::vec S;
   arma::mat V;
