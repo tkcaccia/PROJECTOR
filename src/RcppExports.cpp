@@ -10,7 +10,7 @@ using namespace Rcpp;
 
 
 // SVDS
-arma::mat SVDS(arma::sp_mat  &X);
+arma::vec SVDS(arma::sp_mat  &X);
 RcppExport SEXP PROJECTOR(SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
