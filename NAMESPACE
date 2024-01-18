@@ -21,18 +21,7 @@ importFrom("Rtsne", "Rtsne_neighbors")
 importFrom("umap", "umap.knn", "umap","umap.defaults")
 
   
-S3method(print,tsne.config)
-S3method(print,MDS.config)
 
-exportPattern(floyd,another,vertex,
-              KODAMA,k.test,loads,PLSDACV,KNNPLSDACV,
-              mcplot,core_cpp,floyd,
-              pls.double.cv,knn.double.cv,knn.kodama,
-              pls.kodama,dinisurface,helicoid,spirals,
-              swissroll,normalization,scaling,
-              transformy,frequency_matching,
-              RQ,quality_control,
-              knn_Armadillo,
-              refine_cluster,
-              txtsummary,continuous.test,categorical.test,correlation.test,multi_analysis,pca,tsne.defaults,umap.defaults,MDS.defaults,kabsch)
+
+exportPattern(SVDS)
 
